@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Main>
+	<References>
+	</References>
+	<Jobs>
+		<Job dataclassname="TParametersJobDataItem" name="New Parameters Item">
+			<Params>
+				<Description></Description>
+				<CanPerform></CanPerform>
+				<FlowAction>Success</FlowAction>
+				<ParamList>
+					<Param name="CleverParam">CleverTest</Param>
+				</ParamList>
+			</Params>
+			<Job dataclassname="TScripterDataItem" name="New Scripter Item">
+				<Params>
+					<Description>qwwqqw
+</Description>
+					<CanPerform></CanPerform>
+					<FlowAction>Success</FlowAction>
+					<ErrorBindType>and</ErrorBindType>
+					<ScriptFile></ScriptFile>
+					<LogFile>c:\Users\Public\Log.txt</LogFile>
+					<IsUseScriptFile>No</IsUseScriptFile>
+					<IsUseLogFile>No</IsUseLogFile>
+					<Script><![CDATA[var
+list: TStringList;
+begin
+ list := TStringList.Create();
+try
+ list.Add('Hello World');
+ list.Add(JobParams.GetParam('CleverParam'));
+ list.SaveToFile('c:\Users\Public\Test.txt');
+ JobLog.Add('Log works.');
+finally
+ list.Free();
+end;
+end.
+]]></Script>
+					<ErrorWords></ErrorWords>
+					<Language>Delphi Script</Language>
+				</Params>
+			</Job>
+		</Job>
+	</Jobs>
+</Main>
