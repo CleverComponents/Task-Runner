@@ -19,5 +19,4 @@ You can contribute to the TaskRunner development by suggesting your fixes and im
 
 Please feel free to star our repository to help other devs to learn about this project.
 
-The [GitHub/CleverComponents/Task-Runner](https://github.com/CleverComponents/Task-Runner) repository represents a list of code snippets and demo project. This list will be periodically updated, new versions of the project will be added.
 
