@@ -1,7 +1,5 @@
 # TaskRunner
 
-<img align="left" src="Image\TaskRunner.jpg"/>
-
 This program serves for Software build automation, executing sequential tasks, including database backup/restore, running SQL scripts, Windows shell commands, Pascal scripts, passing variables through the whole task execution chain, and many more. You can set up a list of global parameters, such as Delphi application path, and use these parameters in tasks. You can even call a separated task chain from another task in the same way as you call Delphi procedure or a function, with passing parameters.
 
 
