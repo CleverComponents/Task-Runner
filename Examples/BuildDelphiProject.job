@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Main>
+	<References>
+	</References>
+	<Jobs>
+		<Job dataclassname="TParametersJobDataItem" name="Make Binaries">
+			<Params>
+				<Description></Description>
+				<CanPerform></CanPerform>
+				<FlowAction>Success</FlowAction>
+				<ParamList>
+					<Param name="DESTPATH">c:\Users\Nikita\22\TaskRunner\output</Param>
+					<Param name="ROOTDIR">C:</Param>
+					<Param name="ROOTPATH">Users\Nikita\22\TaskRunner</Param>
+					<Param name="SOURCEPATH"></Param>
+					<Param name="ARCHIVENAME">TaskRunner.zip</Param>
+					<Param name="PKZIPC">@@PKZIPC</Param>
+					<Param name="BINPATH"></Param>
+				</ParamList>
+			</Params>
+			<Job dataclassname="TCommandBatchDataItem" name="Delete Files">
+				<Params>
+					<Description></Description>
+					<CanPerform></CanPerform>
+					<FlowAction>Success</FlowAction>
+					<ErrorBindType>and</ErrorBindType>
+					<ScriptFile></ScriptFile>
+					<LogFile></LogFile>
+					<IsUseScriptFile>No</IsUseScriptFile>
+					<IsUseLogFile>No</IsUseLogFile>
+					<Script><![CDATA[set DESTPATH=::DESTPATH
+DEL "%DESTPATH%\*.*" /Q /S
+]]></Script>
+					<ErrorWords></ErrorWords>
+				</Params>
+			</Job>
+			<Job dataclassname="TScripterDataItem" name="Prepare Params">
+				<Params>
+					<Description></Description>
+					<CanPerform></CanPerform>
+					<FlowAction>Success</FlowAction>
+					<ErrorBindType>and</ErrorBindType>
+					<ScriptFile></ScriptFile>
+					<LogFile></LogFile>
+					<IsUseScriptFile>No</IsUseScriptFile>
+					<IsUseLogFile>No</IsUseLogFile>
+					<Script><![CDATA[var
+	binPath, srcPath: string;
+begin
+	srcPath := JobParams.GetParam('ROOTPATH');
+	binPath := JobParams.GetParam('DESTPATH');
+
+	srcPath := srcPath + '\TaskRunner\Main';
+	binPath := binPath + '\bin';
+
+	JobParams.SetParam('SOURCEPATH', srcPath);
+	JobParams.SetParam('BINPATH', binPath);
+end.
+]]></Script>
+					<ErrorWords></ErrorWords>
+					<Language>Delphi Script</Language>
+				</Params>
+			</Job>
+			<Job dataclassname="TCallJobDataItem" name="Make TaskRunner">
+				<Params>
+					<Description></Description>
+					<CanPerform></CanPerform>
+					<FlowAction>Success</FlowAction>
+					<ParamList>
+						<Param name="DELPHI">@@DELPHI103</Param>
+						<Param name="DESTPATH">:BINPATH</Param>
+						<Param name="SOURCEDIR">:ROOTDIR</Param>
+						<Param name="SOURCEPATH">:SOURCEPATH</Param>
+						<Param name="PROJECTNAME">TaskRunner.dpr</Param>
+						<Param name="DEFINES"></Param>
+						<Param name="LOGFILE">TaskRunner.log</Param>
+						<Param name="LIBPATH">@@LIBPATHS</Param>
+						<Param name="INCPATH"></Param>
+						<Param name="NAMESPACES">-NSSystem;System.Win;Winapi;Vcl;Data;Data.Win</Param>
+					</ParamList>
+					<CallJobName>Build Delphi Project</CallJobName>
+					<CallMediaName></CallMediaName>
+				</Params>
+			</Job>
+			<Job dataclassname="TCommandBatchDataItem" name="Pack Files">
+				<Params>
+					<Description></Description>
+					<CanPerform></CanPerform>
+					<FlowAction>Success</FlowAction>
+					<ErrorBindType>and</ErrorBindType>
+					<ScriptFile></ScriptFile>
+					<LogFile></LogFile>
+					<IsUseScriptFile>No</IsUseScriptFile>
+					<IsUseLogFile>No</IsUseLogFile>
+					<Script><![CDATA[set ROOTDIR=::ROOTDIR
+set ROOTPATH=::ROOTPATH
+set EXAMPLESPATH=%ROOTDIR%\%ROOTPATH%\Examples
+set DESTPATH=::DESTPATH
+set BINPATH=::BINPATH
+set ARCHIVENAME=::ARCHIVENAME
+set ARCHIVEPATH=%DESTPATH%\%ARCHIVENAME%
+set PKZIPC=::PKZIPC
+
+%ROOTDIR%
+cd\
+cd %ROOTPATH%
+
+del %ARCHIVEPATH% /Q
+
+"%PKZIPC%" -add=update "%ARCHIVEPATH%" "%BINPATH%\*.exe"
+"%PKZIPC%" -add=update -dir "%ARCHIVEPATH%" "%EXAMPLESPATH%\*.job"
+]]></Script>
+					<ErrorWords></ErrorWords>
+				</Params>
+			</Job>
+		</Job>
+		<Job dataclassname="TCommandBatchDataItem" name="Build Delphi Project">
+			<Params>
+				<Description></Description>
+				<CanPerform></CanPerform>
+				<FlowAction>Success</FlowAction>
+				<ErrorBindType>or</ErrorBindType>
+				<ScriptFile></ScriptFile>
+				<LogFile></LogFile>
+				<IsUseScriptFile>No</IsUseScriptFile>
+				<IsUseLogFile>No</IsUseLogFile>
+				<Script><![CDATA[set DELPHI=::DELPHI
+set DESTPATH=::DESTPATH
+set SOURCEDIR=::SOURCEDIR
+set SOURCEPATH=::SOURCEPATH
+set PROJECTPATH=%SOURCEDIR%\%SOURCEPATH%
+set PROJECTNAME=::PROJECTNAME
+set DEFINES=::DEFINES
+set LOGFILE=::LOGFILE
+set LIBPATH=::LIBPATH
+set INCPATH=::INCPATH
+set NAMESPACES=::NAMESPACES
+
+set LOGFILE="%DESTPATH%\%LOGFILE%"
+
+%SOURCEDIR%
+cd\
+cd %SOURCEPATH%
+
+set UNITDIR="%DELPHI%\Lib\Delphi2";"%DELPHI%\Lib";"%DELPHI%\Bin";"%DELPHI%\Imports"
+set UNITDIR=%UNITDIR%;"%PROJECTPATH%";%LIBPATH%
+
+set DCC="%DELPHI%\Bin\dcc32" -B
+
+set DCCPOSTFIX= -U%UNITDIR% -I%INCPATH% -$C- -$O+ -$W+ -$D- -$Y-
+
+mkdir %DESTPATH%
+
+%DCC% %NAMESPACES% %PROJECTNAME% %DEFINES% -E%DESTPATH% -LE%DESTPATH% -N%DESTPATH% -LN%DESTPATH% %DCCPOSTFIX% > %LOGFILE%
+
+]]></Script>
+				<ErrorWords>Failed
+Fatal
+FATAL
+FAILED
+</ErrorWords>
+			</Params>
+		</Job>
+	</Jobs>
+</Main>
