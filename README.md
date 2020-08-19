@@ -21,4 +21,6 @@ Please feel free to star our repository to help other devs to learn about this p
 
 ## Examples
 
-* [Build Delphi Project](Examples/BuildDelphiProject.job) - tasks to compile a program using the Delphi command line compiler and pack using the pkzipc utility. See video tutorial on CleverComponents YouTube channel: [How to set up and run a project in TaskRunner](https://youtu.be/cndY-BVm8yA)
+* [Build Delphi Project](Examples/BuildDelphiProject.job) - tasks to compile a program using the Delphi command line compiler and pack using the pkzipc utility.   
+Video tutorial on CleverComponents YouTube channel: [How to set up and run a project in TaskRunner](https://youtu.be/cndY-BVm8yA)
+* [Test Scripter Task](Examples/TestScripterTask.job) - a simple project, which runs a Pascal script.
