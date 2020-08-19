@@ -21,4 +21,4 @@ Please feel free to star our repository to help other devs to learn about this p
 
 ## Examples
 
-* [Build Delphi Project](Task-Runner/Examples/BuildDelphiProject.job)
+* [Build Delphi Project](Examples/BuildDelphiProject.job)
