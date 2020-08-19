@@ -19,4 +19,6 @@ You can contribute to the TaskRunner development by suggesting your fixes and im
 
 Please feel free to star our repository to help other devs to learn about this project.
 
+## Examples
 
+* [Build Delphi Project](Task-Runner/Examples/BuildDelphiProject.job)
