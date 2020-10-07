@@ -166,7 +166,7 @@ procedure TCustomParamsJobItemForm.FormKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   inherited;
-  if (Key = VK_F5) then
+  if (Key = VK_F8) then
   begin
     MemData.Refresh();
   end;

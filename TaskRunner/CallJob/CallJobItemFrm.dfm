@@ -15,6 +15,10 @@ inherited CallJobItemForm: TCallJobItemForm
   end
   inherited PageControl: TPageControl
     inherited tabDetails: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 24
+      ExplicitWidth = 490
+      ExplicitHeight = 300
       inherited Panel2: TPanel
         Height = 67
         ExplicitHeight = 67
@@ -77,6 +81,12 @@ inherited CallJobItemForm: TCallJobItemForm
             Visible = True
           end>
       end
+    end
+    inherited tabAddition: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 24
+      ExplicitWidth = 490
+      ExplicitHeight = 300
     end
   end
 end

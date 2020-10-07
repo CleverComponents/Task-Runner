@@ -10,7 +10,9 @@ type
   private
     FInitDataSet: Boolean;
   protected
+    function GetCanRefresh: Boolean; override;
     procedure SetActive(Value: Boolean); override;
+    procedure InternalRefresh; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -23,6 +25,15 @@ constructor TJobMemData.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FInitDataSet := False;
+end;
+
+function TJobMemData.GetCanRefresh: Boolean;
+begin
+  Result := GetCanModify();
+end;
+
+procedure TJobMemData.InternalRefresh;
+begin
 end;
 
 procedure TJobMemData.SetActive(Value: Boolean);
