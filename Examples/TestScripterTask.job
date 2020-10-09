@@ -3,16 +3,17 @@
 	<References>
 	</References>
 	<Jobs>
-		<Job dataclassname="TParametersJobDataItem" name="New Parameters Item">
+		<Job dataclassname="TParametersJobDataItem" name="Parameters Item">
 			<Params>
 				<Description></Description>
 				<CanPerform></CanPerform>
 				<FlowAction>Success</FlowAction>
 				<ParamList>
-					<Param name="CleverParam">CleverTest</Param>
+					<Param name="name1">value1</Param>
+					<Param name="name2">value2</Param>
 				</ParamList>
 			</Params>
-			<Job dataclassname="TScripterDataItem" name="New Scripter Item">
+			<Job dataclassname="TScripterDataItem" name="PascalScript Item">
 				<Params>
 					<Description>qwwqqw
 </Description>
@@ -24,21 +25,55 @@
 					<IsUseScriptFile>No</IsUseScriptFile>
 					<IsUseLogFile>No</IsUseLogFile>
 					<Script><![CDATA[var
-list: TStringList;
+  list: TStringList;
+  value1: string;
 begin
- list := TStringList.Create();
-try
- list.Add('Hello World');
- list.Add(JobParams.GetParam('CleverParam'));
- list.SaveToFile('c:\Users\Public\Test.txt');
- JobLog.Add('Log works.');
-finally
- list.Free();
-end;
+  list := TStringList.Create();
+  try
+    list.Add('Hello World');
+
+    value1 := JobParams.GetParam('name1');
+    value1 := value1 + ' modified in PascalScript';
+    list.Add(value1);
+    JobParams.SetParam('name1', value1);
+
+    list.SaveToFile('c:\Users\Public\PascalScriptTest.txt');
+
+    JobLog.Add('Saved to file: ' + value1);
+  finally
+    list.Free();
+  end;
 end.
 ]]></Script>
 					<ErrorWords></ErrorWords>
-					<Language>Delphi Script</Language>
+					<Language>PascalScript</Language>
+				</Params>
+			</Job>
+			<Job dataclassname="TScripterDataItem" name="JavaScript Item">
+				<Params>
+					<Description></Description>
+					<CanPerform></CanPerform>
+					<FlowAction>Success</FlowAction>
+					<ErrorBindType>and</ErrorBindType>
+					<ScriptFile></ScriptFile>
+					<LogFile></LogFile>
+					<IsUseScriptFile>No</IsUseScriptFile>
+					<IsUseLogFile>No</IsUseLogFile>
+					<Script><![CDATA[var value1 = jobParams.getParam("name1");
+value1 += " modified in JavaScript";
+jobParams.setParam("name1", value1);
+
+var value2 = jobParams.getParam("name2");
+
+var text = value1 + " " + value2;
+
+var fs = require('fs');
+fs.writeFileSync("c:\\Users\\Public\\JavaScriptTest.txt", "\ufeff" + text);
+
+jobLog.add("Saved to file: " + text);
+]]></Script>
+					<ErrorWords></ErrorWords>
+					<Language>JavaScript</Language>
 				</Params>
 			</Job>
 		</Job>

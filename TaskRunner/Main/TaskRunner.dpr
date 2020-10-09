@@ -1,6 +1,8 @@
 program TaskRunner;
 
 uses
+  FastMM4,
+  FastMM4Messages,
   Vcl.Forms,
   JobsMain in 'JobsMain.pas' {JobsMainFrame},
   main in 'main.pas' {MainForm},
@@ -38,8 +40,11 @@ uses
   JobUtils in '..\Utils\JobUtils.pas',
   OperationUtils in '..\Utils\OperationUtils.pas',
   XMLUtils in '..\Utils\XMLUtils.pas',
-  AbstractOperationParams in '..\Classes\AbstractOperationParams.pas',
-  uPSI_AbstractOperationParams in '..\ScriptJob\uPSI_AbstractOperationParams.pas';
+  ScriptExecutor in '..\ScriptJob\ScriptExecutor.pas',
+  PascalScriptExecutor in '..\ScriptJob\PascalScriptExecutor.pas',
+  JavaScriptExecutor in '..\ScriptJob\JavaScriptExecutor.pas',
+  PascalScriptClassesProxy in '..\ScriptJob\PascalScriptClassesProxy.pas',
+  uPSI_PascalScriptClassesProxy in '..\ScriptJob\uPSI_PascalScriptClassesProxy.pas';
 
 {$R *.res}
 

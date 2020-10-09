@@ -6,7 +6,7 @@ type
   TFlowAction = (faComplete, faSuccess, faFailure, faDisable, faFailThrow, faCompleteThrow);
   TJobRunState = (jsStarted, jsDone, jsFailed, jsWaiting, jsDisabled);
   TJobListBindType = (btAND, btOR);
-  TScripterLanguage = (slDelphiScript);
+  TScripterLanguage = (slPascalScript, slJavaScript);
   TSQLPerformWith = (spOSQLUtilite, spADOLibrary, spScriptEngine, spUpdateDBEngine);
 
 const
@@ -22,14 +22,16 @@ const
 
   cSQLScriptWordDelimiters = #32 + '[]''"';
 
-  cScripterJobUtilities = 'JobUtilities';
-  cScripterParams = 'JobParams';
-  cScripterParamsItems = 'Items';
-  cScripterJobLog = 'JobLog';
-  cScripterJobFullLog = 'JobFullLog';
-  cScripterJobFullErrors = 'JobFullErrors';
-  cScripterParseLexems = cScripterParams + '.' + cScripterParamsItems + '("';
-  cScripterWordDelimiters = #32 + '="';
+  cPascalScriptParams = 'JobParams';
+  cPascalScriptJobLog = 'JobLog';
+  cPascalScriptParseLexems = 'etParam(''';
+  cPascalScriptWordDelimiters = '''GS';
+
+  cJavaScriptParams = 'jobParams';
+  cJavaScriptJobLog = 'jobLog';
+  cJavaScriptParseLexems = 'etParam("';
+  cJavaScriptWordDelimiters = '"gs';
+
   cNOClause = 'NO';
   cScriptClause = 'SCRIPT';
   cSQlErrorWords: array[0..1] of string = ('Msg', 'Level');
@@ -40,7 +42,7 @@ const
   cJobStateNames: array[TJobRunState] of string = ('Started', 'Done', 'Failed', 'Waiting', 'Disabled');
   cJobListBindTypeNames: array[TJobListBindType] of string = ('AND', 'OR');
 
-  cScripterLanguages: array[TScripterLanguage] of string = ('Delphi Script');
+  cScripterLanguages: array[TScripterLanguage] of string = ('PascalScript', 'JavaScript');
 
   cSQLPerformWithNames: array[TSQLPerformWith] of string = (
     'OSQL Utilite', 'OLE DB', 'SQL Script Engine', 'SQL Update DB Engine');
@@ -82,13 +84,13 @@ resourcestring
   cUnknownImportMediaFile = 'Unknown import project file ''%s''';
   cLoadError = 'Loading error';
 
-  cOldScript = 'The script file out of date';
   cScriptError = 'The script engine was returned with some errors, see error log.';
-  cConnectionLost = 'Unable to connect to the MS SQL Server';
-  cGetScriptVersionFailed = 'Unable to define update script version';
-  cScripterError = 'Error occured in line %d, position %d, Code: %d, Source: ''%s'', Description: ''%s'', Help File: ''%s''';
   cJobSkipped = 'The performance of ''%s'' job have been skipped due to ''Can Perform'' condition';
   cCommandLineDescr = 'Command Line to Run: %s';
+
+  cScriptSetParamError = 'setParam accepts two string parameters';
+  cScriptGetParamError = 'getParam accepts one string parameter';
+  cScriptAddLogError = 'add accepts one string parameter';
 
 const
   cCursorPositionMask = 'Ln %s, Col %s';

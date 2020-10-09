@@ -668,7 +668,7 @@ begin
   if (Pos(cParseLexems, s) = 1) then
   begin
     system.Delete(s, 1, Length(cParseLexems));
-    AList.Add(S, NULL);
+    AList.Add(s, NULL);
   end;
 end;
 

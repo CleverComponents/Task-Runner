@@ -6,6 +6,10 @@ inherited CustomParamsJobItemForm: TCustomParamsJobItemForm
   inherited PageControl: TPageControl
     ActivePage = tabDetails
     inherited tabDetails: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 24
+      ExplicitWidth = 490
+      ExplicitHeight = 300
       object Panel2: TPanel
         Left = 0
         Top = 0
@@ -51,7 +55,7 @@ inherited CustomParamsJobItemForm: TCustomParamsJobItemForm
             Expanded = False
             FieldName = 'paramvalue'
             Title.Caption = 'Parameter Value'
-            Width = 359
+            Width = 356
             Visible = True
           end>
       end

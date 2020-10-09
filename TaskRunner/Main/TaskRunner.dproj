@@ -58,6 +58,11 @@
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
         <SanitizedProjectName>TaskRunner</SanitizedProjectName>
+        <DCC_UnitSearchPath>..\..\Thirdparty\FastMM4\$(Platform)\$(Config);..\..\Thirdparty\mORMot;..\..\Thirdparty\mORMot\$(Platform)\$(Config);..\..\Thirdparty\pascalscript\$(Platform)\$(Config);$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <VerInfo_Locale>1049</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=Clever Components;FileDescription=Clever Task Runner;FileVersion=2.0.0.0;InternalName=TaskRunner.exe;LegalCopyright=Copyright (C) 2020 www.CleverComponents.com;LegalTrademarks=ALL RIGHTS RESERVED;OriginalFilename=TaskRunner.exe;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Clever Task Runner;ProductVersion=2.0;Comments=</VerInfo_Keys>
+        <DCC_DUPLICATE_CTOR_DTOR>false</DCC_DUPLICATE_CTOR_DTOR>
+        <DCC_Define>SM52;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_UsePackage>DBXSqliteDriver;IndyIPCommon;RESTComponents;bindcompdbx;DBXInterBaseDriver;vcl;IndyIPServer;vclactnband;vclFireDAC;IndySystem;tethering;svnui;dsnapcon;FireDACADSDriver;FireDACMSAccDriver;fmxFireDAC;vclimg;JobControls;FireDAC;vcltouch;vcldb;bindcompfmx;svn;FireDACSqliteDriver;FireDACPgDriver;ibmonitor;inetdb;soaprtl;DbxCommonDriver;ibxpress;fmx;FireDACIBDriver;fmxdae;xmlrtl;soapmidas;ibxbindings;fmxobj;vclwinx;vclib;rtl;DbxClientDriver;CustomIPTransport;vcldsnap;dbexpress;IndyCore;vclx;bindcomp;appanalytics;dsnap;FireDACCommon;IndyIPClient;bindcompvcl;RESTBackendComponents;VCLRESTComponents;soapserver;dbxcds;VclSmp;adortl;vclie;bindengine;DBXMySQLDriver;CloudService;dsnapxml;FireDACMySQLDriver;dbrtl;IndyProtocols;inetdbxpress;FireDACCommonODBC;FireDACCommonDriver;inet;fmxase;$(DCC_UsePackage)</DCC_UsePackage>
@@ -84,9 +89,8 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_MajorVer>2</VerInfo_MajorVer>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Clever Components;FileDescription=Clever Task Runner;FileVersion=2.0.0.0;InternalName=TaskRunner.exe;LegalCopyright=Copyright (C) 2020 www.CleverComponents.com;LegalTrademarks=ALL RIGHTS RESERVED;OriginalFilename=TaskRunner.exe;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Clever Task Runner;ProductVersion=2.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -183,8 +187,11 @@
         <DCCReference Include="..\Utils\JobUtils.pas"/>
         <DCCReference Include="..\Utils\OperationUtils.pas"/>
         <DCCReference Include="..\Utils\XMLUtils.pas"/>
-        <DCCReference Include="..\Classes\AbstractOperationParams.pas"/>
-        <DCCReference Include="..\ScriptJob\uPSI_AbstractOperationParams.pas"/>
+        <DCCReference Include="..\ScriptJob\ScriptExecutor.pas"/>
+        <DCCReference Include="..\ScriptJob\PascalScriptExecutor.pas"/>
+        <DCCReference Include="..\ScriptJob\JavaScriptExecutor.pas"/>
+        <DCCReference Include="..\ScriptJob\PascalScriptClassesProxy.pas"/>
+        <DCCReference Include="..\ScriptJob\uPSI_PascalScriptClassesProxy.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, System.Contnrs, Winapi.msxml, System.Variants,
-  System.Types, AbstractOperationParams;
+  System.Types;
 
 type
   TJobOperationParams = class;
@@ -24,7 +24,7 @@ type
     property Value: Variant read FValue write SetValue;
   end;
 
-  TJobOperationParams = class(TAbstractOperationParams)
+  TJobOperationParams = class
   private
     FList: TList;
     FOnChanged: TNotifyEvent;
@@ -36,8 +36,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure SetParam(const AName, AValue: string); override;
-    function GetParam(const AName: string): string; override;
     function FindParam(const Value: String): TJobOperationParam;
     function ParamByName(const Value: String): TJobOperationParam;
     procedure Assign(Source: TJobOperationParams);
@@ -229,14 +227,6 @@ begin
   Result := TJobOperationParam(FList.Items[Index]);
 end;
 
-function TJobOperationParams.GetParam(const AName: string): string;
-var
-  jobParam: TJobOperationParam;
-begin
-  jobParam := ParamByName(AName);
-  Result := VarToStr(jobParam.Value);
-end;
-
 procedure TJobOperationParams.Load(AStream: TStream);
 var
   i, Cnt, AType: Integer;
@@ -337,14 +327,6 @@ begin
   finally
     W.Free();
   end;
-end;
-
-procedure TJobOperationParams.SetParam(const AName, AValue: string);
-var
-  jobParam: TJobOperationParam;
-begin
-  jobParam := ParamByName(AName);
-  jobParam.Value := AValue;
 end;
 
 procedure TJobOperationParams.Store(ANode: IXMLDOMNode);
