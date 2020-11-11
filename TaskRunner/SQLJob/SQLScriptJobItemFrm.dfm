@@ -37,14 +37,14 @@ inherited SQLScriptJobItemForm: TSQLScriptJobItemForm
         inherited edtCanPerform: TEdit
           TabOrder = 7
         end
-        object cmbPerformWith: TEdit
+        object cmbPerformWith: TJobComboBox
           Left = 328
           Top = 34
           Width = 145
           Height = 21
           Color = clBtnFace
-          ReadOnly = True
           TabOrder = 6
+          OnChange = cmbPerformWithChange
         end
       end
     end

@@ -22,6 +22,8 @@ const
   opPasteJob = 'opPasteJob';
   opImportJob = 'opImportJob';
   opExportJob = 'opExportJob';
+  opEnableJob = 'opEnableJob';
+  opDisableJob = 'opDisableJob';
   opShowReferences = 'opShowReferences';
   gopLoadLastMedia = 'gopLoadLastMedia';
 

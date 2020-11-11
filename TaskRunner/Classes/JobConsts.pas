@@ -7,7 +7,7 @@ type
   TJobRunState = (jsStarted, jsDone, jsFailed, jsWaiting, jsDisabled);
   TJobListBindType = (btAND, btOR);
   TScripterLanguage = (slPascalScript, slJavaScript);
-  TSQLPerformWith = (spOSQLUtilite, spADOLibrary, spScriptEngine, spUpdateDBEngine);
+  TSQLPerformWith = (spOSQLUtilite, spADOLibrary);
 
 const
   cGlobalJobLibPath = 'JOBLIBRARYPATH';
@@ -45,14 +45,14 @@ const
   cScripterLanguages: array[TScripterLanguage] of string = ('PascalScript', 'JavaScript');
 
   cSQLPerformWithNames: array[TSQLPerformWith] of string = (
-    'OSQL Utilite', 'OLE DB', 'SQL Script Engine', 'SQL Update DB Engine');
+    'OSQL Utilite', 'OLE DB');
 
   cStoreFlowActionNames: array[TFlowAction] of string = ('Complete', 'Success', 'Failure', 'Disable',
     'FailThrow', 'CompleteThrow');
   cStoreBindTypeNames: array[TJobListBindType] of string = ('and', 'or');
   cStoreBoolean: array[Boolean] of string = ('No', 'Yes');
   cStoreSQLPerformWithNames: array[TSQLPerformWith] of string = (
-    'OSQLUtilite', 'ADOLibrary', 'ScriptEngine', 'UpdateDBEngine');
+    'OSQLUtilite', 'ADOLibrary');
 
 resourcestring
   cMainFormCaption = 'Task Runner';

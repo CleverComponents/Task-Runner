@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, System.UITypes, System.Variants, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Grids,
   OperationUtils, JobClasses, JobCtrls, OperationClasses, JobDskClasses, Vcl.ImgList,
-  Winapi.msxml, XMLUtils, Vcl.Menus, ReferendesForm, System.ImageList;
+  Winapi.msxml, XMLUtils, Vcl.Menus, ReferendesForm, System.ImageList, JobConsts;
 
 type
   TJobsMainFrame = class(TForm)
@@ -48,6 +48,7 @@ type
     FOnGetGlobalParams: TOnGetGlobalParamsEvent;
     FReferencesForm: TJobsReferencesFrame;
 
+    procedure SetFlowAction(AFlowAction: TFlowAction);
     function InternalInsertItem(AParentItem: TJobItem; IsSubItem: Boolean = False): TJobItem;
     procedure InternalSaveMedia(AFileName: String);
     procedure LoadTreeList;
@@ -58,6 +59,8 @@ type
     procedure DoGetGlobalParams(var Params: TJobOperationParams);
     procedure ClearControls;
     procedure DoShowReferences(Sender: TObject);
+    procedure DoEnableJob(Sender: TObject);
+    procedure DoDisableJob(Sender: TObject);
     procedure DoExportJob(Sender: TObject);
     procedure DoImportJob(Sender: TObject);
     procedure DoDeleteJobItem(Sender: TObject);
@@ -97,7 +100,7 @@ type
 implementation
 
 uses
-  SelectJobItem, JobConsts, RunJobForm;
+  SelectJobItem, RunJobForm;
 
 {$R *.DFM}
 
@@ -281,6 +284,12 @@ begin
   FJobManager.EditJobItem(Item);
 end;
 
+procedure TJobsMainFrame.DoEnableJob(Sender: TObject);
+begin
+  SetFlowAction(faSuccess);
+  edtFlowAction.ItemIndex := Integer(faSuccess);
+end;
+
 procedure TJobsMainFrame.DoDeleteJobItem(Sender: TObject);
 var
   i: Integer;
@@ -308,6 +317,12 @@ begin
     List.Free();
   end;
   UpdateControls();
+end;
+
+procedure TJobsMainFrame.DoDisableJob(Sender: TObject);
+begin
+  SetFlowAction(faDisable);
+  edtFlowAction.ItemIndex := Integer(faDisable);
 end;
 
 procedure TJobsMainFrame.DoStopSelectedJob(Sender: TObject);
@@ -471,6 +486,8 @@ begin
   FOperationList.AddOperation(opPasteJob, DoPasteJob);
   FOperationList.AddOperation(opImportJob, DoImportJob);
   FOperationList.AddOperation(opExportJob, DoExportJob);
+  FOperationList.AddOperation(opEnableJob, DoEnableJob);
+  FOperationList.AddOperation(opDisableJob, DoDisableJob);
   FOperationList.AddOperation(opShowReferences, DoShowReferences);
 end;
 
@@ -510,6 +527,8 @@ begin
   FOperationList.EnableOperation(opPasteJob, FJobClipBoard <> nil);
   FOperationList.EnableOperation(opImportJob, True);
   FOperationList.EnableOperation(opExportJob, cnt = 1);
+  FOperationList.EnableOperation(opEnableJob, cnt > 0);
+  FOperationList.EnableOperation(opDisableJob, cnt > 0);
   FOperationList.EnableOperation(opStopSelectedJob, cnt > 0);
   
   MemoDescription.Enabled := (Node <> nil);
@@ -610,6 +629,41 @@ begin
   if (State = jsEdited) then
   begin
     IsModified := True;
+  end;
+end;
+
+procedure TJobsMainFrame.SetFlowAction(AFlowAction: TFlowAction);
+var
+  i: Integer;
+  Node: TTreeNode;
+  JobItem: TJobItem;
+begin
+  if FIsChanging or (csDestroying in ComponentState) then Exit;
+  JobsList.Items.BeginUpdate();
+  try
+    for i := 0 to JobsList.Items.Count - 1 do
+    begin
+      Node := JobsList.Items[i];
+      if Node.Selected then
+      begin
+        JobItem := TJobItem(Node.Data);
+        if JobItem.IsLocked then
+        begin
+          raise Exception.Create(cJobDataLocked);
+        end;
+        FIsChanging := True;
+        try
+          JobItem.Data.FlowAction := AFlowAction;
+          Node.ImageIndex := Integer(AFlowAction);
+          Node.SelectedIndex := Integer(AFlowAction);
+          IsModified := True;
+        finally
+          FIsChanging := False;
+        end;
+      end;
+    end;
+  finally
+    JobsList.Items.EndUpdate();
   end;
 end;
 
@@ -721,38 +775,8 @@ begin
 end;
 
 procedure TJobsMainFrame.edtFlowActionChange(Sender: TObject);
-var
-  i: Integer;
-  Node: TTreeNode;
-  JobItem: TJobItem;
 begin
-  if FIsChanging or (csDestroying in ComponentState) then Exit;
-  JobsList.Items.BeginUpdate();
-  try
-    for i := 0 to JobsList.Items.Count - 1 do
-    begin
-      Node := JobsList.Items[i];
-      if Node.Selected then
-      begin
-        JobItem := TJobItem(Node.Data);
-        if JobItem.IsLocked then
-        begin
-          raise Exception.Create(cJobDataLocked);
-        end;
-        FIsChanging := True;
-        try
-          JobItem.Data.FlowAction := TFlowAction(edtFlowAction.ItemIndex);
-          Node.ImageIndex := edtFlowAction.ItemIndex;
-          Node.SelectedIndex := edtFlowAction.ItemIndex;
-          IsModified := True;
-        finally
-          FIsChanging := False;
-        end;
-      end;
-    end;
-  finally
-    JobsList.Items.EndUpdate();
-  end;
+  SetFlowAction(TFlowAction(edtFlowAction.ItemIndex));
 end;
 
 procedure TJobsMainFrame.DoCopyJob(Sender: TObject);
@@ -980,6 +1004,9 @@ procedure TJobsMainFrame.JobsListContextPopup(Sender: TObject;
   MousePos: TPoint; var Handled: Boolean);
 begin
   JobsList.PopupMenu.Items.Clear();
+
+  FOperationList.AddOperationToPopup(JobsList.PopupMenu, opEnableJob, True);
+  FOperationList.AddOperationToPopup(JobsList.PopupMenu, opDisableJob);
 
   FOperationList.AddOperationToPopup(JobsList.PopupMenu, opStartJobAt, True);
   FOperationList.AddOperationToPopup(JobsList.PopupMenu, opStopSelectedJob);

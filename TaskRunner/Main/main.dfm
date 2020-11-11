@@ -175,6 +175,15 @@ object MainForm: TMainForm
     end
     object mnuEdit: TMenuItem
       Caption = '&Edit'
+      object mnuEnableJobItem: TMenuItem
+        Caption = 'En&able Jobs'
+      end
+      object mnuDisableJobItem: TMenuItem
+        Caption = 'Di&sable Jobs'
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
       object mnuAddJobItem: TMenuItem
         Caption = 'Add Job &Item'
       end
@@ -182,10 +191,10 @@ object MainForm: TMainForm
         Caption = 'Add Job &SubItem'
       end
       object mnuEditJobItem: TMenuItem
-        Caption = '&Edit Job Item...'
+        Caption = '&Edit Job...'
       end
       object mnuDeleteJobItem: TMenuItem
-        Caption = '&Delete Selected Jobs'
+        Caption = '&Delete Jobs'
       end
       object mnuLine2: TMenuItem
         Caption = '-'
@@ -218,14 +227,14 @@ object MainForm: TMainForm
     object mnuRun: TMenuItem
       Caption = '&Run'
       object mnuStartJobAt: TMenuItem
-        Caption = 'Start Selected Jobs'
+        Caption = 'Start Jobs'
         ShortCut = 116
       end
       object mnuLine1: TMenuItem
         Caption = '-'
       end
       object mnuStopSelectedJob: TMenuItem
-        Caption = 'Sto&p Selected Jobs'
+        Caption = 'Sto&p Jobs'
       end
       object mnuStopAllJobs: TMenuItem
         Caption = 'Stop All Jobs'

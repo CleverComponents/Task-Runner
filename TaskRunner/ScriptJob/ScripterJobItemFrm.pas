@@ -13,6 +13,7 @@ type
     cmbLanguage: TComboBox;
     procedure cmbLanguageChange(Sender: TObject);
   protected
+    procedure UpdateControls; override;
     procedure AssignData(IsFromDataItem: Boolean = False); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -71,6 +72,12 @@ begin
   begin
     cmbLanguage.Items.Add(cScripterLanguages[i]);
   end;
+end;
+
+procedure TScripterJobItemForm.UpdateControls;
+begin
+  inherited UpdateControls();
+  cmbLanguage.Enabled := not ReadOnly;
 end;
 
 procedure TScripterJobItemForm.cmbLanguageChange(Sender: TObject);

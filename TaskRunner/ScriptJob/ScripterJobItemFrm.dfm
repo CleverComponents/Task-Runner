@@ -14,6 +14,10 @@ inherited ScripterJobItemForm: TScripterJobItemForm
       end
     end
     inherited tabAddition: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 24
+      ExplicitWidth = 490
+      ExplicitHeight = 300
       inherited pAddTop: TPanel
         object Label4: TLabel [3]
           Left = 258

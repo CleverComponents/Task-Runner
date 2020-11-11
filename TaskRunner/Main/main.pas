@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, ToolWin, ComCtrls, ImgList, OperationClasses, JobClasses, XMLUtils,
-  System.ImageList;
+  System.ImageList, JobUtils;
 
 type
   TMainForm = class(TForm)
@@ -55,6 +55,9 @@ type
     mnuJobReferences: TMenuItem;
     btnReferences: TToolButton;
     ToolButton4: TToolButton;
+    mnuEnableJobItem: TMenuItem;
+    mnuDisableJobItem: TMenuItem;
+    N2: TMenuItem;
     procedure mnuExitClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure mnuGlobalParametersClick(Sender: TObject);
@@ -112,6 +115,8 @@ begin
   RegisterMenuItem(opPasteJob, mnuPasteJob);
   RegisterMenuItem(opImportJob, mnuImportJob);
   RegisterMenuItem(opExportJob, mnuExportJob);
+  RegisterMenuItem(opEnableJob, mnuEnableJobItem);
+  RegisterMenuItem(opDisableJob, mnuDisableJobItem);
   RegisterMenuItem(opShowReferences, mnuJobReferences, btnReferences);
 end;
 
@@ -155,7 +160,9 @@ begin
   inherited Create(Owner);
   FIsConsoleErrors := False;
   FGlobalParameters := TJobOperationParams.Create();
-  Caption := cMainFormCaption;
+
+  Caption := Format('%s v.%s (%s)', [cMainFormCaption, BuildNo, {$IFDEF WIN64}'x64'{$ELSE}'x86'{$ENDIF}]);
+
   RegisterMenuItems();
   FJobForm := TJobsMainFrame.Create(nil);
 

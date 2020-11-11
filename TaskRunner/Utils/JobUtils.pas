@@ -113,6 +113,9 @@ const
   cJobOutFile = '_jobout_';
   cJobErrorFile = '_joberror_';
 
+const
+  BuildNo = {$I BuildNo.inc};
+
 function CheckWordExists(const Buffer, NeededString: String): Boolean;
 //function GetSettingsDirectory: string;
 function GetOwnProgramName: string;
