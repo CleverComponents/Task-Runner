@@ -9,7 +9,7 @@ uses
   Winapi.msxml, XMLUtils, Vcl.Menus, ReferendesForm, System.ImageList, JobConsts;
 
 type
-  TJobsMainFrame = class(TForm)
+  TJobsMainFrame = class(TFrame)
     pCenter: TPanel;
     odMediaFile: TOpenDialog;
     sdMediaFile: TSaveDialog;
@@ -21,6 +21,7 @@ type
     MemoDescription: TJobRichEdit;
     JobsList: TJobTreeView;
     JobPopupMenu: TPopupMenu;
+    Bevel1: TBevel;
     procedure JobsListChange(Sender: TObject; Node: TTreeNode);
     procedure JobsListDeletion(Sender: TObject; Node: TTreeNode);
     procedure JobsListDblClick(Sender: TObject);

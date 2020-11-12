@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, ToolWin, ComCtrls, ImgList, OperationClasses, JobClasses, XMLUtils,
-  System.ImageList, JobUtils;
+  System.ImageList, JobUtils, JobsMain, Vcl.ExtCtrls;
 
 type
   TMainForm = class(TForm)
@@ -58,6 +58,12 @@ type
     mnuEnableJobItem: TMenuItem;
     mnuDisableJobItem: TMenuItem;
     N2: TMenuItem;
+    pcMain: TPageControl;
+    tsJobExplorer: TTabSheet;
+    tsRunLog: TTabSheet;
+    pJobForm: TPanel;
+    splitJobForm: TSplitter;
+    pJobEditors: TPanel;
     procedure mnuExitClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure mnuGlobalParametersClick(Sender: TObject);
@@ -69,7 +75,7 @@ type
     FConsoleRunLogName: string;
     FOldWindowPos: TStoreFormStruct;
     FGlobalParameters: TJobOperationParams;
-    FJobForm: TForm;
+    FJobForm: TJobsMainFrame;
     FJobDSKFileName: string;
     FJobParamsFileName: string;
     FIsConsoleErrors: Boolean;
@@ -89,12 +95,14 @@ type
 var
   MainForm: TMainForm;
 
+//TODO http://codeverge.com/embarcadero.cppbuilder.nontech/close-button-in-pagecontrol/1081588
+
 implementation
 
 {$R *.DFM}
 
 uses
-  JobsMain, OperationUtils, JobConsts, GlobalParamsJobItemFrm, JobDskClasses, AboutForm,
+  OperationUtils, JobConsts, GlobalParamsJobItemFrm, JobDskClasses, AboutForm,
   Winapi.msxml;
 
 procedure TMainForm.RegisterMenuItems;
@@ -127,7 +135,7 @@ end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  CanClose := TJobsMainFrame(FJobForm).CanCloseForm();
+  CanClose := FJobForm.CanCloseForm();
 end;
 
 constructor TMainForm.Create(Owner: TComponent);
@@ -164,14 +172,12 @@ begin
   Caption := Format('%s v.%s (%s)', [cMainFormCaption, BuildNo, {$IFDEF WIN64}'x64'{$ELSE}'x86'{$ENDIF}]);
 
   RegisterMenuItems();
+
   FJobForm := TJobsMainFrame.Create(nil);
+  FJobForm.Parent := pJobForm;
+  FJobForm.Align := alClient;
 
-  ClientHeight := MainToolBar.Height;
-  Top := 0; Left := 0; Width := Screen.Width;
-  FJobForm.Left := Left;
-  FJobForm.Top := Top + Height;
-
-  TJobsMainFrame(FJobForm).OnGetGlobalParams := DoGetGlobalParams;
+  FJobForm.OnGetGlobalParams := DoGetGlobalParams;
   TJobOperationManager.Instance.CurrentOperationList := TJobsMainFrame(FJobForm).OperationList;
   FJobDSKFileName := ExtractFilePath(ParamStr(0));
   if (FJobDSKFileName <> '') and (FJobDSKFileName[Length(FJobDSKFileName)] <> '\') then
@@ -185,13 +191,13 @@ begin
   if (ParamCount() > 0) then
   begin
     try
-      TJobsMainFrame(FJobForm).LoadMedia(ParamStr(1));
+      FJobForm.LoadMedia(ParamStr(1));
     except
-      TJobsMainFrame(FJobForm).NewMedia();
+      FJobForm.NewMedia();
     end;
   end else
   begin
-    TJobsMainFrame(FJobForm).NewMedia();
+    FJobForm.NewMedia();
   end;
 end;
 
@@ -243,7 +249,7 @@ begin
 
   FormToXML(Store, MainNode);
 
-  TJobsMainFrame(FJobForm).SaveDesktop(RootNode);
+  FJobForm.SaveDesktop(RootNode);
   SaveXMLToFile(AFileName, Doc);
 end;
 
@@ -277,12 +283,12 @@ begin
       Self.WindowState := wsMaximized;
     end;
   end;
-  TJobsMainFrame(FJobForm).LoadDesktop(RootNode);
+  FJobForm.LoadDesktop(RootNode);
 end;
 
 procedure TMainForm.mnuGlobalParametersClick(Sender: TObject);
 begin
-  EditGlobalParameters(TJobsMainFrame(FJobForm).JobManager, FGlobalParameters);
+  EditGlobalParameters(FJobForm.JobManager, FGlobalParameters);
 end;
 
 procedure TMainForm.DoGetGlobalParams(var Params: TJobOperationParams);
@@ -364,7 +370,7 @@ var
   OldEvent: TRunJobEvent;
 begin
   FConsoleRunLogName := ALogName;
-  JobMgr := (FJobForm as TJobsMainFrame).JobManager;
+  JobMgr := FJobForm.JobManager;
   OldEvent := JobMgr.OnFinishAction;
   JobMgr.OnFinishAction := DoFinishConsoleJob;
   JobMgr.RunJob(AJobName, False, False);
@@ -393,12 +399,12 @@ end;
 
 procedure TMainForm.mnuJobInspectorClick(Sender: TObject);
 begin
-  FJobForm.Show();
+//TODO  FJobForm.Show();
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-  FJobForm.Show();
+//TODO  FJobForm.Show();
 end;
 
 end.

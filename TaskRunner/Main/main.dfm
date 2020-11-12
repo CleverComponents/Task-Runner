@@ -3,8 +3,8 @@ object MainForm: TMainForm
   Top = 109
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'MainForm'
-  ClientHeight = 144
-  ClientWidth = 495
+  ClientHeight = 537
+  ClientWidth = 1030
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,8 +20,10 @@ object MainForm: TMainForm
   object MainToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 495
-    Height = 25
+    Width = 1030
+    Height = 33
+    ButtonHeight = 30
+    ButtonWidth = 35
     Caption = 'MainToolBar'
     Images = imglMainBar
     TabOrder = 0
@@ -35,7 +37,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object btnOpenMedia: TToolButton
-      Left = 23
+      Left = 35
       Top = 0
       Hint = 'Open Project'
       Caption = 'Open Project'
@@ -44,7 +46,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object btnSaveMedia: TToolButton
-      Left = 46
+      Left = 70
       Top = 0
       Hint = 'Save Project'
       Caption = 'Save Project'
@@ -53,7 +55,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object ToolButton1: TToolButton
-      Left = 69
+      Left = 105
       Top = 0
       Width = 8
       Caption = 'ToolButton1'
@@ -61,7 +63,7 @@ object MainForm: TMainForm
       Style = tbsSeparator
     end
     object btnAddJobItem: TToolButton
-      Left = 77
+      Left = 113
       Top = 0
       Hint = 'Add Job Item'
       Caption = 'Add Job Item'
@@ -70,7 +72,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object btnAddJobSubItem: TToolButton
-      Left = 100
+      Left = 148
       Top = 0
       Hint = 'Add Job SubItem'
       Caption = 'Add Job SubItem'
@@ -79,7 +81,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object btnEditJobItem: TToolButton
-      Left = 123
+      Left = 183
       Top = 0
       Hint = 'Edit Job Item'
       Caption = 'Edit Job Item'
@@ -88,7 +90,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object btnDeleteJobItem: TToolButton
-      Left = 146
+      Left = 218
       Top = 0
       Hint = 'Delete Selected Jobs'
       Caption = 'Delete Selected Jobs'
@@ -97,7 +99,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object ToolButton4: TToolButton
-      Left = 169
+      Left = 253
       Top = 0
       Width = 8
       Caption = 'ToolButton4'
@@ -105,14 +107,14 @@ object MainForm: TMainForm
       Style = tbsSeparator
     end
     object btnReferences: TToolButton
-      Left = 177
+      Left = 261
       Top = 0
       Hint = 'Project References'
       Caption = 'Project References'
       ImageIndex = 9
     end
     object ToolButton3: TToolButton
-      Left = 200
+      Left = 296
       Top = 0
       Width = 8
       Caption = 'ToolButton3'
@@ -120,7 +122,7 @@ object MainForm: TMainForm
       Style = tbsSeparator
     end
     object btnStarJobAt: TToolButton
-      Left = 208
+      Left = 304
       Top = 0
       Hint = 'Start Selected Jobs'
       Caption = 'Start Selected Jobs'
@@ -129,7 +131,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object btnStopAllJobs: TToolButton
-      Left = 231
+      Left = 339
       Top = 0
       Hint = 'Stop All Jobs'
       Caption = 'Stop All Jobs'
@@ -138,9 +140,56 @@ object MainForm: TMainForm
       ShowHint = True
     end
   end
+  object pcMain: TPageControl
+    Left = 0
+    Top = 33
+    Width = 1030
+    Height = 504
+    ActivePage = tsJobExplorer
+    Align = alClient
+    Style = tsFlatButtons
+    TabOrder = 1
+    object tsJobExplorer: TTabSheet
+      Caption = 'Job Explorer'
+      object splitJobForm: TSplitter
+        Left = 257
+        Top = 0
+        Height = 473
+        ExplicitLeft = 512
+        ExplicitTop = 184
+        ExplicitHeight = 100
+      end
+      object pJobForm: TPanel
+        Left = 0
+        Top = 0
+        Width = 257
+        Height = 473
+        Align = alLeft
+        BevelOuter = bvNone
+        TabOrder = 0
+      end
+      object pJobEditors: TPanel
+        Left = 260
+        Top = 0
+        Width = 762
+        Height = 473
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 1
+        ExplicitLeft = 416
+        ExplicitTop = 216
+        ExplicitWidth = 185
+        ExplicitHeight = 41
+      end
+    end
+    object tsRunLog: TTabSheet
+      Caption = 'Run Log'
+      ImageIndex = 1
+    end
+  end
   object MainMenu: TMainMenu
-    Left = 192
-    Top = 52
+    Left = 488
+    Top = 4
     object mnuFile: TMenuItem
       Caption = '&File'
       OnClick = mnuFileClick
@@ -250,8 +299,8 @@ object MainForm: TMainForm
     end
   end
   object imglMainBar: TImageList
-    Left = 243
-    Top = 52
+    Left = 555
+    Top = 4
     Bitmap = {
       494C01010A000E00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030

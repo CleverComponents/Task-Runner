@@ -4,7 +4,6 @@ uses
   FastMM4,
   FastMM4Messages,
   Vcl.Forms,
-  JobsMain in 'JobsMain.pas' {JobsMainFrame},
   main in 'main.pas' {MainForm},
   JobClasses in '..\Classes\JobClasses.pas',
   JobConsts in '..\Classes\JobConsts.pas',
@@ -44,7 +43,8 @@ uses
   PascalScriptExecutor in '..\ScriptJob\PascalScriptExecutor.pas',
   JavaScriptExecutor in '..\ScriptJob\JavaScriptExecutor.pas',
   PascalScriptClassesProxy in '..\ScriptJob\PascalScriptClassesProxy.pas',
-  uPSI_PascalScriptClassesProxy in '..\ScriptJob\uPSI_PascalScriptClassesProxy.pas';
+  uPSI_PascalScriptClassesProxy in '..\ScriptJob\uPSI_PascalScriptClassesProxy.pas',
+  JobsMain in 'JobsMain.pas' {JobsMainFrame: TFrame};
 
 {$R *.res}
 
