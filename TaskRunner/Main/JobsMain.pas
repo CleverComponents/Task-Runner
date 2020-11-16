@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, System.UITypes, System.Variants, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Grids,
   OperationUtils, JobClasses, JobCtrls, OperationClasses, JobDskClasses, Vcl.ImgList,
-  Winapi.msxml, XMLUtils, Vcl.Menus, ReferendesForm, System.ImageList, JobConsts;
+  Winapi.msxml, XMLUtils, Vcl.Menus, ReferendesForm, System.ImageList, JobConsts, TabEditors;
 
 type
   TJobsMainFrame = class(TFrame)
@@ -48,6 +48,7 @@ type
     FJobClipBoard: TJobItem;
     FOnGetGlobalParams: TOnGetGlobalParamsEvent;
     FReferencesForm: TJobsReferencesFrame;
+    FTabEditorsManager: TTabEditorsManager;
 
     procedure SetFlowAction(AFlowAction: TFlowAction);
     function InternalInsertItem(AParentItem: TJobItem; IsSubItem: Boolean = False): TJobItem;
@@ -80,6 +81,8 @@ type
     procedure DoLoadLastMedia(Params: TJobOperationParams; var Success: Boolean);
     procedure UpdateTreeList;
     procedure UnlinkChildItems(Node: TTreeNode);
+    procedure DoBeforeRun(AJobItem: TJobItem);
+    procedure DoBeforeEdit(AJobItem: TJobItem; AEditor: TJobEditorItem);
   protected
     procedure AddOperations; virtual;
     procedure UpdateControls; virtual;
@@ -93,16 +96,19 @@ type
     procedure LoadMedia(AFileName: String);
     procedure LoadDesktop(ANode: IXMLDOMNode);
     procedure SaveDesktop(ANode: IXMLDOMNode);
+
     property OperationList: TFormOperationList read FOperationList;
     property IsModified: Boolean read FIsModified write SetIsModified;
     property JobManager: TJobManager read FJobManager;
+    property TabEditorsManager: TTabEditorsManager read FTabEditorsManager write FTabEditorsManager;
+
     property OnGetGlobalParams: TOnGetGlobalParamsEvent read FOnGetGlobalParams write FOnGetGlobalParams;
   end;
 
 implementation
 
 uses
-  SelectJobItem, RunJobForm;
+  SelectJobItem, RunJobForm, CustomDialog;
 
 {$R *.DFM}
 
@@ -273,6 +279,11 @@ begin
   end;
 end;
 
+procedure TJobsMainFrame.DoBeforeEdit(AJobItem: TJobItem; AEditor: TJobEditorItem);
+begin
+  (AEditor as TCustomJobEditorItem).TabEditorsManager := TabEditorsManager;
+end;
+
 procedure TJobsMainFrame.DoEditJobItem(Sender: TObject);
 var
   Item: TJobItem;
@@ -364,9 +375,13 @@ begin
   FMediaFileName := '';
   AddOperations();
   UpdateControls();
+
   FJobManager.OnDataStateChanged := DoDataStateChanged;
   FJobManager.OnDataChanged := DoDataChanged;
   FJobManager.OnGetGlobalParams := DoGetGlobalParams;
+  FJobManager.OnBeforeRun := DoBeforeRun;
+  FJobManager.OnBeforeEdit := DoBeforeEdit;
+
   RegisterGlobalOperation(gopLoadLastMedia, DoLoadLastMedia);
 end;
 
@@ -603,11 +618,19 @@ begin
   DoEditJobItem(nil);
 end;
 
+procedure TJobsMainFrame.DoBeforeRun(AJobItem: TJobItem);
+var
+  RunFrm: TRunJobfrm;
+begin
+  RunFrm := TRunJobfrm.Instance;
+  RunFrm.FreeNotification(Self);
+  RunFrm.ShowProgress(FJobManager);
+end;
+
 procedure TJobsMainFrame.DoStartJobAt(Sender: TObject);
 var
   i: Integer;
   Node: TTreeNode;
-  RunFrm: TRunJobfrm;
 begin
   for i := 0 to JobsList.Items.Count - 1 do
   begin
@@ -618,9 +641,6 @@ begin
       begin
         raise Exception.Create(cJobModified);
       end;
-      RunFrm := TRunJobfrm.Instance;
-      RunFrm.FreeNotification(Self);
-      RunFrm.ShowProgress(FJobManager);
       FJobManager.RunJob(TJobItem(Node.Data), False);
     end;
   end;

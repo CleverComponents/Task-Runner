@@ -44,7 +44,8 @@ uses
   JavaScriptExecutor in '..\ScriptJob\JavaScriptExecutor.pas',
   PascalScriptClassesProxy in '..\ScriptJob\PascalScriptClassesProxy.pas',
   uPSI_PascalScriptClassesProxy in '..\ScriptJob\uPSI_PascalScriptClassesProxy.pas',
-  JobsMain in 'JobsMain.pas' {JobsMainFrame: TFrame};
+  JobsMain in 'JobsMain.pas' {JobsMainFrame: TFrame},
+  TabEditors in '..\CustomJob\TabEditors.pas' {TabEditorsFrame: TFrame};
 
 {$R *.res}
 

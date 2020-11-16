@@ -3,8 +3,9 @@ unit CustomDialog;
 interface
 
 uses
-  Windows, Messages, System.SysUtils, System.Classes, Vcl.Graphics, System.UITypes, Controls, Forms, Dialogs, ExtCtrls,
-  StdCtrls, ComCtrls, JobClasses, JobConsts, JobCtrls, JobDskClasses, Winapi.msxml;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, Vcl.Graphics, System.UITypes,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls,
+  JobClasses, JobConsts, JobCtrls, JobDskClasses, Winapi.msxml, TabEditors;
 
 type
   TCustomJobEditorItem = class;
@@ -76,6 +77,7 @@ type
   TCustomJobEditorItem = class(TJobEditorItem)
   private
     FForm: TCustomDialogForm;
+    FTabEditorsManager: TTabEditorsManager;
   protected
     function GetEditorFormClass: TCustomDialogFormClass; virtual; abstract;
     procedure SetReadOnly(const Value: Boolean); override;
@@ -83,6 +85,8 @@ type
     constructor Create(AData: TJobDataItem); override;
     destructor Destroy; override;
     procedure Perform; override;
+
+    property TabEditorsManager: TTabEditorsManager read FTabEditorsManager write FTabEditorsManager;
   end;
 
   TCustomJobDskItem = class(TJobDskItem)
@@ -444,6 +448,7 @@ end;
 
 procedure TCustomJobEditorItem.Perform;
 begin
+  TabEditorsManager.AddTab(Self);
   FForm.Show();
 end;
 

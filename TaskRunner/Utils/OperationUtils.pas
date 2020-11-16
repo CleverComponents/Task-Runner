@@ -10,6 +10,7 @@ const
   opLoadMedia = 'opLoadMedia';
   opSaveMedia = 'opSaveMedia';
   opSaveMediaAs = 'opSaveMediaAs';
+  opSaveJob = 'opSaveJob';
   opAddJobItem = 'opAddJobItem';
   opAddJobSubItem = 'opAddJobSubItem';
   opEditJobItem = 'opEditJobItem';

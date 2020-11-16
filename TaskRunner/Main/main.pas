@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, ToolWin, ComCtrls, ImgList, OperationClasses, JobClasses, XMLUtils,
-  System.ImageList, JobUtils, JobsMain, Vcl.ExtCtrls;
+  System.ImageList, JobUtils, JobsMain, TabEditors, Vcl.ExtCtrls;
 
 type
   TMainForm = class(TForm)
@@ -71,6 +71,7 @@ type
     FConsoleRunLogName: string;
     FGlobalParameters: TJobOperationParams;
     FJobForm: TJobsMainFrame;
+    FTabEditors: TTabEditorsFrame;
     FJobDSKFileName: string;
     FJobParamsFileName: string;
     FIsConsoleErrors: Boolean;
@@ -170,12 +171,18 @@ begin
 
   RegisterMenuItems();
 
+  FTabEditors := TTabEditorsFrame.Create(nil);
+  FTabEditors.Parent := pJobEditors;
+  FTabEditors.Align := alClient;
+  
   FJobForm := TJobsMainFrame.Create(nil);
   FJobForm.Parent := pJobForm;
   FJobForm.Align := alClient;
 
+  FJobForm.TabEditorsManager := FTabEditors.Manager;
   FJobForm.OnGetGlobalParams := DoGetGlobalParams;
-  TJobOperationManager.Instance.CurrentOperationList := TJobsMainFrame(FJobForm).OperationList;
+  TJobOperationManager.Instance.CurrentOperationList := FJobForm.OperationList;
+
   FJobDSKFileName := ExtractFilePath(ParamStr(0));
   if (FJobDSKFileName <> '') and (FJobDSKFileName[Length(FJobDSKFileName)] <> '\') then
   begin
@@ -185,6 +192,7 @@ begin
   FJobDSKFileName := FJobDSKFileName + cJobDeskTopFileName;
   LoadGlobalParameters(FJobParamsFileName);
   LoadDesktop(FJobDSKFileName);
+  
   if (ParamCount() > 0) then
   begin
     try
@@ -212,10 +220,15 @@ destructor TMainForm.Destroy;
   end;
 
 begin
-  StoreGlobalParameters(FJobParamsFileName);
-  SaveDesktop(FJobDSKFileName);
-  FJobForm.Free();
-  FGlobalParameters.Free();
+  try
+    StoreGlobalParameters(FJobParamsFileName);
+    SaveDesktop(FJobDSKFileName);
+  finally
+    FJobForm.Free();
+    FTabEditors.Free();
+    FGlobalParameters.Free();
+  end;
+  
   inherited Destroy();
 end;
 

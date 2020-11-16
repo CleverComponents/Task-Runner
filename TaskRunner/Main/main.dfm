@@ -155,10 +155,6 @@ object MainForm: TMainForm
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 0
-    ExplicitTop = 0
-    ExplicitWidth = 588
-    ExplicitHeight = 473
   end
   object pJobForm: TPanel
     Left = 0
@@ -168,8 +164,6 @@ object MainForm: TMainForm
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 0
-    ExplicitHeight = 473
   end
   object MainMenu: TMainMenu
     Left = 488
