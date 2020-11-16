@@ -25,8 +25,6 @@ object JobsMainFrame: TJobsMainFrame
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 0
-    ExplicitHeight = 376
     object pFlowAction: TPanel
       Left = 0
       Top = 0
@@ -84,9 +82,6 @@ object JobsMainFrame: TJobsMainFrame
       OnEdited = JobsListEdited
       OnKeyDown = JobsListKeyDown
       OnStartDrag = JobsListStartDrag
-      ExplicitLeft = -48
-      ExplicitTop = -137
-      ExplicitHeight = 345
     end
   end
   object MemoDescription: TJobRichEdit

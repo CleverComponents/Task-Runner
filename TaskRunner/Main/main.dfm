@@ -1,10 +1,9 @@
 object MainForm: TMainForm
   Left = 260
   Top = 109
-  BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'MainForm'
   ClientHeight = 537
-  ClientWidth = 1030
+  ClientWidth = 856
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,14 +12,22 @@ object MainForm: TMainForm
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
+  Position = poDesktopCenter
   OnCloseQuery = FormCloseQuery
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object splitJobForm: TSplitter
+    Left = 257
+    Top = 33
+    Height = 504
+    ExplicitLeft = 234
+    ExplicitTop = 0
+    ExplicitHeight = 473
+  end
   object MainToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 1030
+    Width = 856
     Height = 33
     ButtonHeight = 30
     ButtonWidth = 35
@@ -140,52 +147,29 @@ object MainForm: TMainForm
       ShowHint = True
     end
   end
-  object pcMain: TPageControl
+  object pJobEditors: TPanel
+    Left = 260
+    Top = 33
+    Width = 596
+    Height = 504
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 1
+    ExplicitLeft = 0
+    ExplicitTop = 0
+    ExplicitWidth = 588
+    ExplicitHeight = 473
+  end
+  object pJobForm: TPanel
     Left = 0
     Top = 33
-    Width = 1030
+    Width = 257
     Height = 504
-    ActivePage = tsJobExplorer
-    Align = alClient
-    Style = tsFlatButtons
-    TabOrder = 1
-    object tsJobExplorer: TTabSheet
-      Caption = 'Job Explorer'
-      object splitJobForm: TSplitter
-        Left = 257
-        Top = 0
-        Height = 473
-        ExplicitLeft = 512
-        ExplicitTop = 184
-        ExplicitHeight = 100
-      end
-      object pJobForm: TPanel
-        Left = 0
-        Top = 0
-        Width = 257
-        Height = 473
-        Align = alLeft
-        BevelOuter = bvNone
-        TabOrder = 0
-      end
-      object pJobEditors: TPanel
-        Left = 260
-        Top = 0
-        Width = 762
-        Height = 473
-        Align = alClient
-        BevelOuter = bvNone
-        TabOrder = 1
-        ExplicitLeft = 416
-        ExplicitTop = 216
-        ExplicitWidth = 185
-        ExplicitHeight = 41
-      end
-    end
-    object tsRunLog: TTabSheet
-      Caption = 'Run Log'
-      ImageIndex = 1
-    end
+    Align = alLeft
+    BevelOuter = bvNone
+    TabOrder = 2
+    ExplicitTop = 0
+    ExplicitHeight = 473
   end
   object MainMenu: TMainMenu
     Left = 488

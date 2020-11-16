@@ -12,6 +12,7 @@ object SelectjobItemForm: TSelectjobItemForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poOwnerFormCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -43,7 +44,6 @@ object SelectjobItemForm: TSelectjobItemForm
     Width = 184
     Height = 21
     Style = csDropDownList
-    ItemHeight = 13
     TabOrder = 1
     OnCloseUp = cmbItemTypeCloseUp
   end

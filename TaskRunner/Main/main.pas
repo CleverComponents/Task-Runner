@@ -58,9 +58,6 @@ type
     mnuEnableJobItem: TMenuItem;
     mnuDisableJobItem: TMenuItem;
     N2: TMenuItem;
-    pcMain: TPageControl;
-    tsJobExplorer: TTabSheet;
-    tsRunLog: TTabSheet;
     pJobForm: TPanel;
     splitJobForm: TSplitter;
     pJobEditors: TPanel;
@@ -70,15 +67,15 @@ type
     procedure mnuFileClick(Sender: TObject);
     procedure About1Click(Sender: TObject);
     procedure mnuJobInspectorClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
     FConsoleRunLogName: string;
-    FOldWindowPos: TStoreFormStruct;
     FGlobalParameters: TJobOperationParams;
     FJobForm: TJobsMainFrame;
     FJobDSKFileName: string;
     FJobParamsFileName: string;
     FIsConsoleErrors: Boolean;
+    FOldStoreFormStruct: TStoreFormStruct;
+
     procedure RegisterMenuItems;
     procedure LoadDesktop(AFileName: String);
     procedure SaveDesktop(AFileName: String);
@@ -232,6 +229,8 @@ begin
   RootNode := Doc.createElement('FrameWork');
   Doc.appendChild(RootNode);
 
+  FillChar(Store, SizeOf(Store), 0);
+
   if (Self.WindowState = wsNormal) then
   begin
     Store.Left := Self.Left;
@@ -240,9 +239,8 @@ begin
     Store.Height := Self.Height;
   end else
   begin
-    Store := FOldWindowPos;
+    Store := FOldStoreFormStruct;
   end;
-  Store.Maximized := (Self.WindowState = wsMaximized);
 
   MainNode := RootNode.ownerDocument.createElement('MainForm');
   RootNode.appendChild(MainNode);
@@ -274,15 +272,13 @@ begin
     if (Store.Height <> 0) then Self.Height := Store.Height;
     if (Store.Left <> 0) then Self.Left := Store.Left;
     if (Store.Top <> 0) then Self.Top := Store.Top;
-    FOldWindowPos.Width := Self.Width;
-    FOldWindowPos.Height := Self.Height;
-    FOldWindowPos.Left := Self.Left;
-    FOldWindowPos.Top := Self.Top;
-    if Store.Maximized then
-    begin
-      Self.WindowState := wsMaximized;
-    end;
   end;
+
+  FOldStoreFormStruct.Width := Self.Width;
+  FOldStoreFormStruct.Height := Self.Height;
+  FOldStoreFormStruct.Left := Self.Left;
+  FOldStoreFormStruct.Top := Self.Top;
+
   FJobForm.LoadDesktop(RootNode);
 end;
 
@@ -399,12 +395,7 @@ end;
 
 procedure TMainForm.mnuJobInspectorClick(Sender: TObject);
 begin
-//TODO  FJobForm.Show();
-end;
-
-procedure TMainForm.FormShow(Sender: TObject);
-begin
-//TODO  FJobForm.Show();
+  FJobForm.ShowForm();
 end;
 
 end.

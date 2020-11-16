@@ -88,6 +88,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function CanCloseForm: Boolean;
+    procedure ShowForm;
     procedure NewMedia;
     procedure LoadMedia(AFileName: String);
     procedure LoadDesktop(ANode: IXMLDOMNode);
@@ -677,6 +678,11 @@ begin
   end;
 end;
 
+procedure TJobsMainFrame.ShowForm;
+begin
+  Parent.Width := 320;
+end;
+
 procedure TJobsMainFrame.JobsListStartDrag(Sender: TObject; var DragObject: TDragObject);
 begin
   FDraggedNode := JobsList.Selected;
@@ -956,10 +962,7 @@ begin
   if (ChildNode <> nil) then
   begin
     XMLToForm(Store, ChildNode);
-    Self.Width := Store.Width;
-    Self.Height := Store.Height;
-    Self.Left := Store.Left;
-    Self.Top := Store.Top;
+    Self.Parent.Width := Store.Width;
   end;
   ChildNode := ANode.selectSingleNode('Projects');
   if (ChildNode <> nil) then
@@ -975,11 +978,7 @@ var
 begin
   ChildNode := ANode.ownerDocument.createElement('InspectorForm');
   ANode.appendChild(ChildNode);
-  Store.Width := Self.Width;
-  Store.Height := Self.Height;
-  Store.Left := Self.Left;
-  Store.Top := Self.Top;
-  Store.Maximized := False;
+  Store.Width := Self.Parent.Width;
   FormToXML(Store, ChildNode);
   ChildNode := ANode.ownerDocument.createElement('Projects');
   ANode.appendChild(ChildNode);
