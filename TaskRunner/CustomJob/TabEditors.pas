@@ -14,7 +14,9 @@ type
     PageControl: TPageControl;
     PopupMenu: TPopupMenu;
     Close1: TMenuItem;
-    Save1: TMenuItem;
+    procedure PageControlContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
+    procedure Close1Click(Sender: TObject);
   private
     FTabEditorsManager: TTabEditorsManager;
   public
@@ -24,13 +26,26 @@ type
     property Manager: TTabEditorsManager read FTabEditorsManager;
   end;
 
+  TTabItem = class
+  private
+    FTabSheet: TTabSheet;
+    FEditor: TJobEditorItem;
+  public
+    property TabSheet: TTabSheet read FTabSheet write FTabSheet;
+    property Editor: TJobEditorItem read FEditor write FEditor;
+  end;
+
   TTabEditorsManager = class
   private
-    FFrame: TTabEditorsFrame;
-  public
-    constructor Create(AFrame: TTabEditorsFrame);
+    FTabEditorsFrame: TTabEditorsFrame;
+    FTabItems: TObjectList<TTabItem>;
 
-    procedure AddTab(AEditor: TJobEditorItem);
+    function FindTabItem(AEditor: TJobEditorItem): TTabItem;
+  public
+    constructor Create(ATabEditorsFrame: TTabEditorsFrame);
+    destructor Destroy; override;
+
+    procedure AddEditor(AEditor: TJobEditorItem; AEditorControl: TWinControl);
   end;
 
 implementation
@@ -38,6 +53,11 @@ implementation
 {$R *.dfm}
 
 { TTabEditorsFrame }
+
+procedure TTabEditorsFrame.Close1Click(Sender: TObject);
+begin
+  //TODO
+end;
 
 constructor TTabEditorsFrame.Create(AOwner: TComponent);
 begin
@@ -51,21 +71,75 @@ begin
   inherited Destroy();
 end;
 
-{ TTabEditorsManager }
-
-procedure TTabEditorsManager.AddTab(AEditor: TJobEditorItem);
+procedure TTabEditorsFrame.PageControlContextPopup(Sender: TObject;
+  MousePos: TPoint; var Handled: Boolean);
 var
-  ts: TTabSheet;
+  HitTests: THitTests;
+  Point: TPoint;
 begin
-  ts := TTabSheet.Create(FFrame);
-  ts.PageControl := FFrame.PageControl;
-  ts.Caption := AEditor.Data.JobName;
+  HitTests := PageControl.GetHitTestInfoAt(MousePos.X, MousePos.Y);
+  Handled := (htOnLabel in HitTests);
+  if Handled then
+  begin
+    Point := ClientToScreen(MousePos);
+    PopupMenu.Popup(Point.X, Point.Y);
+  end;
 end;
 
-constructor TTabEditorsManager.Create(AFrame: TTabEditorsFrame);
+{ TTabEditorsManager }
+
+procedure TTabEditorsManager.AddEditor(AEditor: TJobEditorItem; AEditorControl: TWinControl);
+var
+  ti: TTabItem;
+  ts: TTabSheet;
+begin
+  ti := FindTabItem(AEditor);
+  if (ti = nil) then
+  begin
+    ti := TTabItem.Create();
+    FTabItems.Add(ti);
+
+    ts := TTabSheet.Create(FTabEditorsFrame);
+    ts.PageControl := FTabEditorsFrame.PageControl;
+    ts.Caption := AEditor.Data.JobName;
+
+    ti.Editor := AEditor;
+    ti.TabSheet := ts;
+
+    AEditorControl.Parent := ts;
+    AEditorControl.Align := alClient;
+  end;
+  FTabEditorsFrame.PageControl.ActivePage := ti.TabSheet;
+end;
+
+constructor TTabEditorsManager.Create(ATabEditorsFrame: TTabEditorsFrame);
 begin
   inherited Create();
-  FFrame := AFrame;
+
+  FTabItems := TObjectList<TTabItem>.Create();
+
+  FTabEditorsFrame := ATabEditorsFrame;
+end;
+
+destructor TTabEditorsManager.Destroy;
+begin
+  FTabItems.Free();
+  inherited Destroy();
+end;
+
+function TTabEditorsManager.FindTabItem(AEditor: TJobEditorItem): TTabItem;
+var
+  i: Integer;
+begin
+  for i := 0 to FTabItems.Count - 1 do
+  begin
+    Result := FTabItems[i];
+    if (Result.Editor = AEditor) then
+    begin
+      Exit;
+    end;
+  end;
+  Result := nil;
 end;
 
 end.

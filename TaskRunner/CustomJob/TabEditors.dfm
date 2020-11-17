@@ -12,16 +12,14 @@ object TabEditorsFrame: TTabEditorsFrame
     Align = alClient
     TabOrder = 0
     TabStop = False
+    OnContextPopup = PageControlContextPopup
   end
   object PopupMenu: TPopupMenu
     Left = 144
     Top = 104
-    object Save1: TMenuItem
-      Caption = '&Save'
-      Enabled = False
-    end
     object Close1: TMenuItem
       Caption = '&Close'
+      OnClick = Close1Click
     end
   end
 end

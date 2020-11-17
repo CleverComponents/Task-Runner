@@ -1,9 +1,10 @@
 object CustomDialogForm: TCustomDialogForm
   Left = 264
   Top = 109
+  BorderStyle = bsNone
   Caption = 'CustomDialogForm'
-  ClientHeight = 363
-  ClientWidth = 498
+  ClientHeight = 402
+  ClientWidth = 514
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,14 +19,16 @@ object CustomDialogForm: TCustomDialogForm
   TextHeight = 13
   object pBottom: TPanel
     Left = 0
-    Top = 328
-    Width = 498
+    Top = 367
+    Width = 514
     Height = 35
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitTop = 328
+    ExplicitWidth = 498
     object Panel1: TPanel
-      Left = 269
+      Left = 285
       Top = 0
       Width = 229
       Height = 35
@@ -33,6 +36,7 @@ object CustomDialogForm: TCustomDialogForm
       BevelOuter = bvNone
       Caption = 'Panel1'
       TabOrder = 0
+      ExplicitLeft = 269
       object btnOK: TButton
         Left = 6
         Top = 8
@@ -69,11 +73,13 @@ object CustomDialogForm: TCustomDialogForm
   object PageControl: TPageControl
     Left = 0
     Top = 0
-    Width = 498
-    Height = 328
+    Width = 514
+    Height = 367
     ActivePage = tabAddition
     Align = alClient
     TabOrder = 1
+    ExplicitWidth = 498
+    ExplicitHeight = 328
     object tabDetails: TTabSheet
       Caption = 'Details'
       ExplicitLeft = 0
@@ -84,14 +90,17 @@ object CustomDialogForm: TCustomDialogForm
     object tabAddition: TTabSheet
       Caption = 'Addition'
       ImageIndex = 1
+      ExplicitWidth = 490
+      ExplicitHeight = 300
       object pAddTop: TPanel
         Left = 0
         Top = 0
-        Width = 490
+        Width = 506
         Height = 47
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
+        ExplicitWidth = 490
         object Label1: TLabel
           Left = 6
           Top = 16
@@ -128,8 +137,8 @@ object CustomDialogForm: TCustomDialogForm
       object MemoDescription: TJobRichEdit
         Left = 0
         Top = 47
-        Width = 490
-        Height = 234
+        Width = 506
+        Height = 273
         Align = alClient
         Font.Charset = RUSSIAN_CHARSET
         Font.Color = clWindowText
@@ -147,11 +156,13 @@ object CustomDialogForm: TCustomDialogForm
         Zoom = 100
         OnChange = AdditionDataChange
         OnSelectionChange = MemoDescriptionSelectionChange
+        ExplicitWidth = 490
+        ExplicitHeight = 234
       end
       object sbDescription: TStatusBar
         Left = 0
-        Top = 281
-        Width = 490
+        Top = 320
+        Width = 506
         Height = 19
         Panels = <
           item
@@ -159,6 +170,8 @@ object CustomDialogForm: TCustomDialogForm
             Text = 'Ln 1, Col 1'
             Width = 50
           end>
+        ExplicitTop = 281
+        ExplicitWidth = 490
       end
     end
   end

@@ -59,7 +59,6 @@ type
     procedure DoApply; virtual;
     procedure UpdateControls; virtual;
     procedure AssignData(IsFromDataItem: Boolean = False); virtual;
-    procedure CreateParams(var Params: TCreateParams); override;
     function GetJobDskItemClass: TJobDskItemClass; virtual;
     procedure AssignDskData(IsFromDskItem: Boolean; var IsNewDskItem: Boolean); virtual;
     property IsLoading: Boolean read FIsLoading write FIsLoading;
@@ -430,12 +429,6 @@ begin
   FForm.AssignDskData(True, b);
 end;
 
-procedure TCustomDialogForm.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  Params.WndParent := 0;
-end;
-
 destructor TCustomJobEditorItem.Destroy;
 begin
   if (FForm <> nil) then
@@ -448,7 +441,7 @@ end;
 
 procedure TCustomJobEditorItem.Perform;
 begin
-  TabEditorsManager.AddTab(Self);
+  TabEditorsManager.AddEditor(Self, FForm);
   FForm.Show();
 end;
 
