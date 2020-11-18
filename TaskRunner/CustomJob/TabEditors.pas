@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.Menus, System.UITypes,
-  System.Generics.Collections, JobClasses;
+  System.Generics.Collections, JobClasses, OperationUtils;
 
 type
   TTabEditorsManager = class;
@@ -17,21 +17,22 @@ type
     procedure PageControlContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
     procedure Close1Click(Sender: TObject);
+    procedure PageControlChange(Sender: TObject);
   private
-    FTabEditorsManager: TTabEditorsManager;
+    FTabManager: TTabEditorsManager;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    property Manager: TTabEditorsManager read FTabEditorsManager;
+    property TabManager: TTabEditorsManager read FTabManager;
   end;
 
   TTabItem = class
   private
-    FTabSheet: TTabSheet;
+    FTab: TTabSheet;
     FEditor: TJobEditorItem;
   public
-    property TabSheet: TTabSheet read FTabSheet write FTabSheet;
+    property Tab: TTabSheet read FTab write FTab;
     property Editor: TJobEditorItem read FEditor write FEditor;
   end;
 
@@ -40,12 +41,16 @@ type
     FTabEditorsFrame: TTabEditorsFrame;
     FTabItems: TObjectList<TTabItem>;
 
-    function FindTabItem(AEditor: TJobEditorItem): TTabItem;
+    function FindTabItem(AEditor: TJobEditorItem): TTabItem; overload;
+    function FindTabItem(ATab: TTabSheet): TTabItem; overload;
+  protected
+    procedure ActivateEditor;
   public
     constructor Create(ATabEditorsFrame: TTabEditorsFrame);
     destructor Destroy; override;
 
     procedure AddEditor(AEditor: TJobEditorItem; AEditorControl: TWinControl);
+    procedure RemoveEditor(AEditor: TJobEditorItem);
   end;
 
 implementation
@@ -56,19 +61,27 @@ implementation
 
 procedure TTabEditorsFrame.Close1Click(Sender: TObject);
 begin
-  //TODO
+  if (TJobOperationManager.Instance.CurrentOperationList <> nil) then
+  begin
+    TJobOperationManager.Instance.CurrentOperationList.PerformOperation(opCloseJob, Sender);
+  end;
 end;
 
 constructor TTabEditorsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FTabEditorsManager := TTabEditorsManager.Create(Self);
+  FTabManager := TTabEditorsManager.Create(Self);
 end;
 
 destructor TTabEditorsFrame.Destroy;
 begin
-  FTabEditorsManager.Free();
+  FTabManager.Free();
   inherited Destroy();
+end;
+
+procedure TTabEditorsFrame.PageControlChange(Sender: TObject);
+begin
+  TabManager.ActivateEditor();
 end;
 
 procedure TTabEditorsFrame.PageControlContextPopup(Sender: TObject;
@@ -88,6 +101,17 @@ end;
 
 { TTabEditorsManager }
 
+procedure TTabEditorsManager.ActivateEditor;
+var
+  ti: TTabItem;
+begin
+  ti := FindTabItem(FTabEditorsFrame.PageControl.ActivePage);
+  if (ti <> nil) then
+  begin
+    ti.Editor.Perform();
+  end;
+end;
+
 procedure TTabEditorsManager.AddEditor(AEditor: TJobEditorItem; AEditorControl: TWinControl);
 var
   ti: TTabItem;
@@ -104,12 +128,12 @@ begin
     ts.Caption := AEditor.Data.JobName;
 
     ti.Editor := AEditor;
-    ti.TabSheet := ts;
+    ti.Tab := ts;
 
     AEditorControl.Parent := ts;
     AEditorControl.Align := alClient;
   end;
-  FTabEditorsFrame.PageControl.ActivePage := ti.TabSheet;
+  FTabEditorsFrame.PageControl.ActivePage := ti.Tab;
 end;
 
 constructor TTabEditorsManager.Create(ATabEditorsFrame: TTabEditorsFrame);
@@ -117,7 +141,6 @@ begin
   inherited Create();
 
   FTabItems := TObjectList<TTabItem>.Create();
-
   FTabEditorsFrame := ATabEditorsFrame;
 end;
 
@@ -125,6 +148,34 @@ destructor TTabEditorsManager.Destroy;
 begin
   FTabItems.Free();
   inherited Destroy();
+end;
+
+function TTabEditorsManager.FindTabItem(ATab: TTabSheet): TTabItem;
+var
+  i: Integer;
+begin
+  for i := 0 to FTabItems.Count - 1 do
+  begin
+    Result := FTabItems[i];
+    if (Result.Tab = ATab) then
+    begin
+      Exit;
+    end;
+  end;
+  Result := nil;
+end;
+
+procedure TTabEditorsManager.RemoveEditor(AEditor: TJobEditorItem);
+var
+  ti: TTabItem;
+begin
+  ti := FindTabItem(AEditor);
+  if (ti <> nil) then
+  begin
+    ti.Tab.Free();
+    FTabItems.Remove(ti);
+    ActivateEditor();
+  end;
 end;
 
 function TTabEditorsManager.FindTabItem(AEditor: TJobEditorItem): TTabItem;

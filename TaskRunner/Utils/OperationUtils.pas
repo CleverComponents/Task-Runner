@@ -11,6 +11,7 @@ const
   opSaveMedia = 'opSaveMedia';
   opSaveMediaAs = 'opSaveMediaAs';
   opSaveJob = 'opSaveJob';
+  opCloseJob = 'opCloseJob';
   opAddJobItem = 'opAddJobItem';
   opAddJobSubItem = 'opAddJobSubItem';
   opEditJobItem = 'opEditJobItem';

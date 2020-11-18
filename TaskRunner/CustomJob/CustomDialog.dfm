@@ -19,8 +19,6 @@ object CustomDialogForm: TCustomDialogForm
     Align = alClient
     TabOrder = 0
     TabPosition = tpBottom
-    ExplicitWidth = 320
-    ExplicitHeight = 240
     object tabDetails: TTabSheet
       Caption = 'Details'
       ExplicitLeft = 0
@@ -31,10 +29,6 @@ object CustomDialogForm: TCustomDialogForm
     object tabAddition: TTabSheet
       Caption = 'Addition'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 312
-      ExplicitHeight = 214
       object pAddTop: TPanel
         Left = 0
         Top = 0
@@ -110,8 +104,6 @@ object CustomDialogForm: TCustomDialogForm
             Text = 'Ln 1, Col 1'
             Width = 50
           end>
-        ExplicitTop = 195
-        ExplicitWidth = 312
       end
     end
   end

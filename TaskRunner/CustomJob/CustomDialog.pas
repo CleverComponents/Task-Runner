@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, Vcl.Graphics, System.UITypes,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls,
-  JobClasses, JobConsts, JobCtrls, JobDskClasses, Winapi.msxml, TabEditors;
+  JobClasses, JobConsts, JobCtrls, JobDskClasses, Winapi.msxml, TabEditors, OperationUtils, OperationClasses;
 
 type
   TCustomJobEditorItem = class;
@@ -41,12 +41,17 @@ type
     function GetIsModified: Boolean;
     function CanCloseForm: Boolean;
     function GetFullJobName: String;
+    procedure DoSaveJob(Sender: TObject);
+    procedure DoCloseJob(Sender: TObject);
   protected
     procedure DoApply; virtual;
     procedure UpdateControls; virtual;
     procedure AssignData(IsFromDataItem: Boolean = False); virtual;
     function GetJobDskItemClass: TJobDskItemClass; virtual;
     procedure AssignDskData(IsFromDskItem: Boolean; var IsNewDskItem: Boolean); virtual;
+    procedure AddOperations(AOperationList: TFormOperationList); virtual;
+    procedure RemoveOperations(AOperationList: TFormOperationList); virtual;
+    procedure Activate;
 
     property IsLoading: Boolean read FIsLoading write FIsLoading;
   public
@@ -64,7 +69,7 @@ type
   TCustomJobEditorItem = class(TJobEditorItem)
   private
     FForm: TCustomDialogForm;
-    FTabEditorsManager: TTabEditorsManager;
+    FTabManager: TTabEditorsManager;
   protected
     function GetEditorFormClass: TCustomDialogFormClass; virtual; abstract;
     procedure SetReadOnly(const Value: Boolean); override;
@@ -73,7 +78,7 @@ type
     destructor Destroy; override;
     procedure Perform; override;
 
-    property TabEditorsManager: TTabEditorsManager read FTabEditorsManager write FTabEditorsManager;
+    property TabManager: TTabEditorsManager read FTabManager write FTabManager;
   end;
 
   TCustomJobDskItem = class(TJobDskItem)
@@ -100,10 +105,29 @@ uses
 
 { TCustomDialogForm }
 
+procedure TCustomDialogForm.Activate;
+begin
+  if (TJobOperationManager.Instance.CurrentOperationList <> nil) then
+  begin
+    RemoveOperations(TJobOperationManager.Instance.CurrentOperationList);
+    AddOperations(TJobOperationManager.Instance.CurrentOperationList);
+  end;
+
+  UpdateControls();
+end;
+
 procedure TCustomDialogForm.DoApply;
 begin
   AssignData();
   IsModified := False;
+end;
+
+procedure TCustomDialogForm.DoCloseJob(Sender: TObject);
+begin
+  if CanCloseForm() then
+  begin
+    FWrapper.Free();
+  end;
 end;
 
 procedure TCustomDialogForm.UpdateControls;
@@ -112,7 +136,13 @@ var
 begin
   MemoDescription.ReadOnly := FReadOnly;
   cmbFlowAction.Enabled := not FReadOnly;
-//TODO  btnApply.Enabled := (not FReadOnly) and IsModified;
+
+  if (TJobOperationManager.Instance.CurrentOperationList <> nil) then
+  begin
+    TJobOperationManager.Instance.CurrentOperationList.EnableOperation(opSaveJob, (not FReadOnly) and IsModified);
+    TJobOperationManager.Instance.CurrentOperationList.EnableOperation(opCloseJob, True);
+  end;
+
   edtCanPerform.Enabled := not FReadOnly;
   S := '';
   if FReadOnly then
@@ -281,10 +311,20 @@ begin
   IsRunning := (Sender as TJobDataItem).DataState = jsRun;
 end;
 
+procedure TCustomDialogForm.DoSaveJob(Sender: TObject);
+begin
+  DoApply();
+end;
+
 destructor TCustomDialogForm.Destroy;
 var
   b: Boolean;
 begin
+  if (TJobOperationManager.Instance.CurrentOperationList <> nil) then
+  begin
+    RemoveOperations(TJobOperationManager.Instance.CurrentOperationList);
+  end;
+
   AssignDskData(False, b);
 
   if (FWrapper <> nil) then
@@ -349,6 +389,7 @@ var
   b: Boolean;
 begin
   inherited Create(AData);
+
   FForm := GetEditorFormClass().Create(nil);
   FForm.Data := AData;
   FForm.FWrapper := Self;
@@ -359,21 +400,43 @@ destructor TCustomJobEditorItem.Destroy;
 begin
   if (FForm <> nil) then
   begin
+    FForm.Parent := nil;
     FForm.FWrapper := nil;
     FForm.Free();
   end;
+
+  TabManager.RemoveEditor(Self);
+
   inherited Destroy();
 end;
 
 procedure TCustomJobEditorItem.Perform;
 begin
-  TabEditorsManager.AddEditor(Self, FForm);
+  FForm.IsLoading := True;
+  try
+    TabManager.AddEditor(Self, FForm);
+    FForm.Activate();
+  finally
+    FForm.IsLoading := False;
+  end;
 end;
 
 procedure TCustomDialogForm.AdditionDataChange(Sender: TObject);
 begin
   if IsLoading then Exit;
   IsModified := True;
+end;
+
+procedure TCustomDialogForm.AddOperations(AOperationList: TFormOperationList);
+begin
+  AOperationList.AddOperation(opSaveJob, DoSaveJob);
+  AOperationList.AddOperation(opCloseJob, DoCloseJob);
+end;
+
+procedure TCustomDialogForm.RemoveOperations(AOperationList: TFormOperationList);
+begin
+  AOperationList.RemoveOperation(opSaveJob);
+  AOperationList.RemoveOperation(opCloseJob);
 end;
 
 function TCustomDialogForm.CanCloseForm: Boolean;

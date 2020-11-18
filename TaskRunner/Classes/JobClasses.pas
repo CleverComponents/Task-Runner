@@ -18,7 +18,7 @@ type
   TJobItemEvent = procedure (JobItem: TJobItem) of object;
   TJobStateEvent = procedure (AJobItem: TJobItem; State: TJobState) of object;
   TOnGetGlobalParamsEvent = procedure (var Params: TJobOperationParams) of object;
-  TEditJobEvent = procedure (AJobItem: TJobItem; AEditor: TJobEditorItem) of object;
+  TJobEditorEvent = procedure (AJobItem: TJobItem; AEditor: TJobEditorItem) of object;
 
   TJobVisitor = class
   private
@@ -157,6 +157,7 @@ type
     constructor Create(AData: TJobDataItem); virtual;
     destructor Destroy; override;
     procedure Perform; virtual; abstract;
+
     property Data: TJobDataItem read FData;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly;
   end;
@@ -232,7 +233,7 @@ type
     FOnItemPerformedAction: TRunJobMessageEvent;
     FReferences: TJobOperationParams;
     FOnBeforeRun: TJobItemEvent;
-    FOnBeforeEdit: TEditJobEvent;
+    FOnCreateEditor: TJobEditorEvent;
 
     function GetRootItems(Index: Integer): TJobItem;
     function GetRootItemsCount: Integer;
@@ -249,7 +250,7 @@ type
     procedure DataStateChanged(AJobItem: TJobItem; State: TJobState); virtual;
     procedure DataChanged(AJobItem: TJobItem); virtual;
     procedure DoBeforeRun(AJobItem: TJobItem); virtual;
-    procedure DoBeforeEdit(AJobItem: TJobItem; AEditor: TJobEditorItem); virtual;
+    procedure DoCreateEditor(AJobItem: TJobItem; AEditor: TJobEditorItem); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -282,7 +283,7 @@ type
     property OnDataChanged: TJobItemEvent read FOnDataChanged write FOnDataChanged;
     property OnGetGlobalParams: TOnGetGlobalParamsEvent read FOnGetGlobalParams write FOnGetGlobalParams;
     property OnBeforeRun: TJobItemEvent read FOnBeforeRun write FOnBeforeRun;
-    property OnBeforeEdit: TEditJobEvent read FOnBeforeEdit write FOnBeforeEdit;
+    property OnCreateEditor: TJobEditorEvent read FOnCreateEditor write FOnCreateEditor;
   end;
 
   TJobEditorManager = class
@@ -935,6 +936,7 @@ begin
     if (EditorClass <> nil) then
     begin
       Editor := EditorClass.Create(AItem.FData);
+      DoCreateEditor(AItem, Editor);
     end;
   end;
   if (Editor = nil) then
@@ -942,8 +944,6 @@ begin
     raise Exception.Create(cNonRegisteredEditor);
   end;
   Editor.ReadOnly := IsReadOnly;
-
-  DoBeforeEdit(AItem, Editor);
 
   Editor.Perform();
 end;
@@ -1073,11 +1073,11 @@ begin
   end;
 end;
 
-procedure TJobManager.DoBeforeEdit(AJobItem: TJobItem; AEditor: TJobEditorItem);
+procedure TJobManager.DoCreateEditor(AJobItem: TJobItem; AEditor: TJobEditorItem);
 begin
-  if Assigned(OnBeforeEdit) then
+  if Assigned(OnCreateEditor) then
   begin
-    OnBeforeEdit(AJobItem, AEditor);
+    OnCreateEditor(AJobItem, AEditor);
   end;
 end;
 

@@ -12,6 +12,7 @@ object TabEditorsFrame: TTabEditorsFrame
     Align = alClient
     TabOrder = 0
     TabStop = False
+    OnChange = PageControlChange
     OnContextPopup = PageControlContextPopup
   end
   object PopupMenu: TPopupMenu

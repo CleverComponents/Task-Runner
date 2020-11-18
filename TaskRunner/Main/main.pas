@@ -61,6 +61,9 @@ type
     pJobForm: TPanel;
     splitJobForm: TSplitter;
     pJobEditors: TPanel;
+    mnuSaveJob: TMenuItem;
+    btnSaveJob: TToolButton;
+    mnuCloseJob: TMenuItem;
     procedure mnuExitClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure mnuGlobalParametersClick(Sender: TObject);
@@ -123,6 +126,8 @@ begin
   RegisterMenuItem(opExportJob, mnuExportJob);
   RegisterMenuItem(opEnableJob, mnuEnableJobItem);
   RegisterMenuItem(opDisableJob, mnuDisableJobItem);
+  RegisterMenuItem(opSaveJob, mnuSaveJob, btnSaveJob);
+  RegisterMenuItem(opCloseJob, mnuCloseJob);
   RegisterMenuItem(opShowReferences, mnuJobReferences, btnReferences);
 end;
 
@@ -179,7 +184,7 @@ begin
   FJobForm.Parent := pJobForm;
   FJobForm.Align := alClient;
 
-  FJobForm.TabEditorsManager := FTabEditors.Manager;
+  FJobForm.TabManager := FTabEditors.TabManager;
   FJobForm.OnGetGlobalParams := DoGetGlobalParams;
   TJobOperationManager.Instance.CurrentOperationList := FJobForm.OperationList;
 
@@ -221,6 +226,8 @@ destructor TMainForm.Destroy;
 
 begin
   try
+    TJobOperationManager.Instance.CurrentOperationList := nil;
+
     StoreGlobalParameters(FJobParamsFileName);
     SaveDesktop(FJobDSKFileName);
   finally

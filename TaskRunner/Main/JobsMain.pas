@@ -48,7 +48,7 @@ type
     FJobClipBoard: TJobItem;
     FOnGetGlobalParams: TOnGetGlobalParamsEvent;
     FReferencesForm: TJobsReferencesFrame;
-    FTabEditorsManager: TTabEditorsManager;
+    FTabManager: TTabEditorsManager;
 
     procedure SetFlowAction(AFlowAction: TFlowAction);
     function InternalInsertItem(AParentItem: TJobItem; IsSubItem: Boolean = False): TJobItem;
@@ -82,7 +82,7 @@ type
     procedure UpdateTreeList;
     procedure UnlinkChildItems(Node: TTreeNode);
     procedure DoBeforeRun(AJobItem: TJobItem);
-    procedure DoBeforeEdit(AJobItem: TJobItem; AEditor: TJobEditorItem);
+    procedure DoCreateEditor(AJobItem: TJobItem; AEditor: TJobEditorItem);
   protected
     procedure AddOperations; virtual;
     procedure UpdateControls; virtual;
@@ -100,7 +100,7 @@ type
     property OperationList: TFormOperationList read FOperationList;
     property IsModified: Boolean read FIsModified write SetIsModified;
     property JobManager: TJobManager read FJobManager;
-    property TabEditorsManager: TTabEditorsManager read FTabEditorsManager write FTabEditorsManager;
+    property TabManager: TTabEditorsManager read FTabManager write FTabManager;
 
     property OnGetGlobalParams: TOnGetGlobalParamsEvent read FOnGetGlobalParams write FOnGetGlobalParams;
   end;
@@ -279,9 +279,9 @@ begin
   end;
 end;
 
-procedure TJobsMainFrame.DoBeforeEdit(AJobItem: TJobItem; AEditor: TJobEditorItem);
+procedure TJobsMainFrame.DoCreateEditor(AJobItem: TJobItem; AEditor: TJobEditorItem);
 begin
-  (AEditor as TCustomJobEditorItem).TabEditorsManager := TabEditorsManager;
+  (AEditor as TCustomJobEditorItem).TabManager := TabManager;
 end;
 
 procedure TJobsMainFrame.DoEditJobItem(Sender: TObject);
@@ -380,7 +380,7 @@ begin
   FJobManager.OnDataChanged := DoDataChanged;
   FJobManager.OnGetGlobalParams := DoGetGlobalParams;
   FJobManager.OnBeforeRun := DoBeforeRun;
-  FJobManager.OnBeforeEdit := DoBeforeEdit;
+  FJobManager.OnCreateEditor := DoCreateEditor;
 
   RegisterGlobalOperation(gopLoadLastMedia, DoLoadLastMedia);
 end;
