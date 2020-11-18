@@ -5,28 +5,21 @@ inherited CustomScriptJobItemForm: TCustomScriptJobItemForm
   TextHeight = 13
   inherited pBottom: TPanel
     TabOrder = 1
-    inherited Panel1: TPanel
-      inherited btnOK: TButton
-        Caption = '&OK'
-      end
-      inherited btnCancel: TButton
-        Caption = '&Cancel'
-      end
-      inherited btnApply: TButton
-        Caption = '&Apply'
-      end
-    end
   end
   inherited PageControl: TPageControl
     ActivePage = tabDetails
     TabOrder = 0
     OnChange = PageControlChange
     inherited tabDetails: TTabSheet
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object memoScript: TJobRichEdit
         Left = 0
         Top = 0
-        Width = 490
-        Height = 281
+        Width = 506
+        Height = 322
         Align = alClient
         Font.Charset = RUSSIAN_CHARSET
         Font.Color = clWindowText
@@ -47,8 +40,8 @@ inherited CustomScriptJobItemForm: TCustomScriptJobItemForm
       end
       object sbScript: TStatusBar
         Left = 0
-        Top = 281
-        Width = 490
+        Top = 322
+        Width = 506
         Height = 19
         BiDiMode = bdLeftToRight
         Panels = <
@@ -60,9 +53,15 @@ inherited CustomScriptJobItemForm: TCustomScriptJobItemForm
             Width = 10
           end>
         ParentBiDiMode = False
+        ExplicitTop = 281
+        ExplicitWidth = 490
       end
     end
     inherited tabAddition: TTabSheet
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       inherited pAddTop: TPanel
         Height = 87
         ExplicitHeight = 87
@@ -127,9 +126,9 @@ inherited CustomScriptJobItemForm: TCustomScriptJobItemForm
       end
       inherited MemoDescription: TJobRichEdit
         Top = 87
-        Height = 194
+        Height = 235
         ExplicitTop = 87
-        ExplicitHeight = 194
+        ExplicitHeight = 235
       end
       inherited sbDescription: TStatusBar
         ExplicitWidth = 492

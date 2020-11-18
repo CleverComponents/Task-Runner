@@ -11,7 +11,6 @@ type
   TCustomJobEditorItem = class;
 
   TCustomDialogForm = class(TForm)
-    pBottom: TPanel;
     PageControl: TPageControl;
     tabDetails: TTabSheet;
     tabAddition: TTabSheet;
@@ -19,16 +18,9 @@ type
     Label1: TLabel;
     cmbFlowAction: TJobComboBox;
     MemoDescription: TJobRichEdit;
-    Panel1: TPanel;
-    btnOK: TButton;
-    btnCancel: TButton;
-    btnApply: TButton;
     sbDescription: TStatusBar;
     lblCanPerform: TLabel;
     edtCanPerform: TEdit;
-    procedure btnApplyClick(Sender: TObject);
-    procedure btnCancelClick(Sender: TObject);
-    procedure btnOKClick(Sender: TObject);
     procedure AdditionDataChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -54,8 +46,6 @@ type
   protected
     procedure DoClose(var Action: TCloseAction); override;
     procedure DoShow; override;
-    procedure DoOK; virtual;
-    procedure DoCancel; virtual;
     procedure DoApply; virtual;
     procedure UpdateControls; virtual;
     procedure AssignData(IsFromDataItem: Boolean = False); virtual;
@@ -118,41 +108,13 @@ begin
   IsModified := False;
 end;
 
-procedure TCustomDialogForm.DoCancel;
-begin
-  IsModified := False;
-  Close();
-end;
-
-procedure TCustomDialogForm.DoOK;
-begin
-  AssignData();
-  IsModified := False;
-  Close();
-end;
-
-procedure TCustomDialogForm.btnApplyClick(Sender: TObject);
-begin
-  DoApply();
-end;
-
-procedure TCustomDialogForm.btnCancelClick(Sender: TObject);
-begin
-  DoCancel();
-end;
-
-procedure TCustomDialogForm.btnOKClick(Sender: TObject);
-begin
-  DoOK();
-end;
-
 procedure TCustomDialogForm.UpdateControls;
 var
   S: String;
 begin
   MemoDescription.ReadOnly := FReadOnly;
   cmbFlowAction.Enabled := not FReadOnly;
-  btnApply.Enabled := (not FReadOnly) and IsModified;
+//TODO  btnApply.Enabled := (not FReadOnly) and IsModified;
   edtCanPerform.Enabled := not FReadOnly;
   S := '';
   if FReadOnly then

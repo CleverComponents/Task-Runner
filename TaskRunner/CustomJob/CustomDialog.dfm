@@ -17,81 +17,24 @@ object CustomDialogForm: TCustomDialogForm
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
-  object pBottom: TPanel
-    Left = 0
-    Top = 367
-    Width = 514
-    Height = 35
-    Align = alBottom
-    BevelOuter = bvNone
-    TabOrder = 0
-    ExplicitTop = 328
-    ExplicitWidth = 498
-    object Panel1: TPanel
-      Left = 285
-      Top = 0
-      Width = 229
-      Height = 35
-      Align = alRight
-      BevelOuter = bvNone
-      Caption = 'Panel1'
-      TabOrder = 0
-      ExplicitLeft = 269
-      object btnOK: TButton
-        Left = 6
-        Top = 8
-        Width = 72
-        Height = 22
-        Caption = 'OK'
-        Default = True
-        ModalResult = 1
-        TabOrder = 0
-        OnClick = btnOKClick
-      end
-      object btnCancel: TButton
-        Left = 79
-        Top = 8
-        Width = 72
-        Height = 22
-        Cancel = True
-        Caption = 'Cancel'
-        ModalResult = 2
-        TabOrder = 1
-        OnClick = btnCancelClick
-      end
-      object btnApply: TButton
-        Left = 152
-        Top = 8
-        Width = 72
-        Height = 22
-        Caption = 'Apply'
-        TabOrder = 2
-        OnClick = btnApplyClick
-      end
-    end
-  end
   object PageControl: TPageControl
     Left = 0
     Top = 0
     Width = 514
-    Height = 367
+    Height = 402
     ActivePage = tabAddition
     Align = alClient
-    TabOrder = 1
-    ExplicitWidth = 498
-    ExplicitHeight = 328
+    TabOrder = 0
+    TabPosition = tpBottom
+    ExplicitHeight = 367
     object tabDetails: TTabSheet
       Caption = 'Details'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitHeight = 341
     end
     object tabAddition: TTabSheet
       Caption = 'Addition'
       ImageIndex = 1
-      ExplicitWidth = 490
-      ExplicitHeight = 300
+      ExplicitHeight = 341
       object pAddTop: TPanel
         Left = 0
         Top = 0
@@ -100,7 +43,6 @@ object CustomDialogForm: TCustomDialogForm
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitWidth = 490
         object Label1: TLabel
           Left = 6
           Top = 16
@@ -138,7 +80,7 @@ object CustomDialogForm: TCustomDialogForm
         Left = 0
         Top = 47
         Width = 506
-        Height = 273
+        Height = 310
         Align = alClient
         Font.Charset = RUSSIAN_CHARSET
         Font.Color = clWindowText
@@ -156,12 +98,11 @@ object CustomDialogForm: TCustomDialogForm
         Zoom = 100
         OnChange = AdditionDataChange
         OnSelectionChange = MemoDescriptionSelectionChange
-        ExplicitWidth = 490
-        ExplicitHeight = 234
+        ExplicitHeight = 275
       end
       object sbDescription: TStatusBar
         Left = 0
-        Top = 320
+        Top = 357
         Width = 506
         Height = 19
         Panels = <
@@ -170,8 +111,7 @@ object CustomDialogForm: TCustomDialogForm
             Text = 'Ln 1, Col 1'
             Width = 50
           end>
-        ExplicitTop = 281
-        ExplicitWidth = 490
+        ExplicitTop = 322
       end
     end
   end
