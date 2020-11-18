@@ -1,16 +1,8 @@
 inherited CallJobItemForm: TCallJobItemForm
-  Caption = 'CallJobItemForm'
-  PixelsPerInch = 96
-  TextHeight = 13
   inherited PageControl: TPageControl
     inherited tabDetails: TTabSheet
-      ExplicitTop = 4
-      ExplicitWidth = 506
-      ExplicitHeight = 341
       inherited Panel2: TPanel
-        Width = 506
         Height = 67
-        ExplicitWidth = 506
         ExplicitHeight = 67
         object Label2: TLabel [0]
           Left = 235
@@ -61,8 +53,7 @@ inherited CallJobItemForm: TCallJobItemForm
       end
       inherited List: TDBGrid
         Top = 67
-        Width = 506
-        Height = 274
+        Height = 358
         OnKeyDown = ListKeyDown
         Columns = <
           item
@@ -81,12 +72,6 @@ inherited CallJobItemForm: TCallJobItemForm
             Visible = True
           end>
       end
-    end
-    inherited tabAddition: TTabSheet
-      ExplicitLeft = 4
-      ExplicitTop = 4
-      ExplicitWidth = 506
-      ExplicitHeight = 341
     end
   end
 end

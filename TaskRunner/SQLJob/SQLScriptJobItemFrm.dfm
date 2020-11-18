@@ -1,16 +1,14 @@
 inherited SQLScriptJobItemForm: TSQLScriptJobItemForm
-  Caption = 'SQL Script Editor'
-  PixelsPerInch = 96
-  TextHeight = 13
   inherited PageControl: TPageControl
     inherited tabDetails: TTabSheet
       ExplicitLeft = 4
       ExplicitTop = 4
-      ExplicitWidth = 506
-      ExplicitHeight = 341
+      ExplicitWidth = 524
       inherited memoScript: TJobRichEdit
         Top = 40
-        Height = 282
+        Height = 366
+        ExplicitTop = 40
+        ExplicitHeight = 366
       end
       inherited sbScript: TStatusBar
         Panels = <
@@ -19,13 +17,11 @@ inherited SQLScriptJobItemForm: TSQLScriptJobItemForm
             Text = 'Ln 1, Col 1'
             Width = 10
           end>
-        ExplicitTop = 322
-        ExplicitWidth = 506
       end
       object pConnection: TPanel
         Left = 0
         Top = 0
-        Width = 506
+        Width = 524
         Height = 40
         Align = alTop
         BevelOuter = bvNone

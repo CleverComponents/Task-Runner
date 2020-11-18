@@ -1,19 +1,15 @@
 inherited CustomParamsJobItemForm: TCustomParamsJobItemForm
-  Caption = 'Global Parameters Dialog'
-  OldCreateOrder = True
-  PixelsPerInch = 96
-  TextHeight = 13
   inherited PageControl: TPageControl
     ActivePage = tabDetails
     inherited tabDetails: TTabSheet
       ExplicitLeft = 4
-      ExplicitTop = 24
-      ExplicitWidth = 490
-      ExplicitHeight = 300
+      ExplicitTop = 4
+      ExplicitWidth = 524
+      ExplicitHeight = 425
       object Panel2: TPanel
         Left = 0
         Top = 0
-        Width = 490
+        Width = 524
         Height = 47
         Align = alTop
         BevelOuter = bvNone
@@ -32,8 +28,8 @@ inherited CustomParamsJobItemForm: TCustomParamsJobItemForm
       object List: TDBGrid
         Left = 0
         Top = 47
-        Width = 490
-        Height = 253
+        Width = 524
+        Height = 378
         Align = alClient
         DataSource = DataSource
         Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgCancelOnExit]
@@ -59,6 +55,12 @@ inherited CustomParamsJobItemForm: TCustomParamsJobItemForm
             Visible = True
           end>
       end
+    end
+    inherited tabAddition: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 4
+      ExplicitWidth = 524
+      ExplicitHeight = 425
     end
   end
   object DataSource: TDataSource

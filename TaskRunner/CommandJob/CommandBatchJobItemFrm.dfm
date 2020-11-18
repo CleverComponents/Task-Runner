@@ -1,7 +1,4 @@
 inherited CommandBatchJobItemForm: TCommandBatchJobItemForm
-  Caption = 'Command Batch Editor'
-  PixelsPerInch = 96
-  TextHeight = 13
   inherited PageControl: TPageControl
     inherited tabDetails: TTabSheet
       inherited sbScript: TStatusBar

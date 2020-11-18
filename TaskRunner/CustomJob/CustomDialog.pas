@@ -10,7 +10,7 @@ uses
 type
   TCustomJobEditorItem = class;
 
-  TCustomDialogForm = class(TForm)
+  TCustomDialogForm = class(TFrame)
     PageControl: TPageControl;
     tabDetails: TTabSheet;
     tabAddition: TTabSheet;
@@ -22,9 +22,6 @@ type
     lblCanPerform: TLabel;
     edtCanPerform: TEdit;
     procedure AdditionDataChange(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure MemoDescriptionSelectionChange(Sender: TObject);
   private
     FIsModified: Boolean;
@@ -35,6 +32,7 @@ type
     FReadOnly: Boolean;
     FIsRunning: Boolean;
     FJobName: String;
+
     procedure SetIsModified(const Value: Boolean);
     procedure SetData(const Value: TJobDataItem);
     procedure SetReadOnly(const Value: Boolean);
@@ -44,17 +42,17 @@ type
     function CanCloseForm: Boolean;
     function GetFullJobName: String;
   protected
-    procedure DoClose(var Action: TCloseAction); override;
-    procedure DoShow; override;
     procedure DoApply; virtual;
     procedure UpdateControls; virtual;
     procedure AssignData(IsFromDataItem: Boolean = False); virtual;
     function GetJobDskItemClass: TJobDskItemClass; virtual;
     procedure AssignDskData(IsFromDskItem: Boolean; var IsNewDskItem: Boolean); virtual;
+
     property IsLoading: Boolean read FIsLoading write FIsLoading;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
     property IsModified: Boolean read GetIsModified write SetIsModified;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly;
     property IsRunning: Boolean read FIsRunning write SetIsRunning;
@@ -251,23 +249,6 @@ begin
   end;
 end;
 
-procedure TCustomDialogForm.DoClose(var Action: TCloseAction);
-begin
-  inherited DoClose(Action);
-  Action := caFree;
-  if (FWrapper <> nil) then
-  begin
-    FWrapper.FForm := nil;
-    FWrapper.Free();
-  end;
-end;
-
-procedure TCustomDialogForm.DoShow;
-begin
-  inherited DoShow();
-  UpdateControls();
-end;
-
 constructor TCustomDialogForm.Create(AOwner: TComponent);
 var
   i: TFlowAction;
@@ -305,10 +286,18 @@ var
   b: Boolean;
 begin
   AssignDskData(False, b);
+
+  if (FWrapper <> nil) then
+  begin
+    FWrapper.FForm := nil;
+    FWrapper.Free();
+  end;
+
   if (FData <> nil) then
   begin
     FData.OnDataStateChange := nil;
   end;
+
   inherited Destroy();
 end;
 
@@ -334,7 +323,6 @@ procedure TCustomDialogForm.AssignDskData(IsFromDskItem: Boolean; var IsNewDskIt
 var
   fullname: string;
   DskItem: TJobDskItem;
-  CustDskItem: TCustomJobDskItem;
   Storage: TJobDskItemStorage;
 begin
   Storage := TJobDskMediaStorage.Instance.CurrentItem;
@@ -346,30 +334,6 @@ begin
   begin
     DskItem := GetJobDskItemClass().Create(fullname);
     Storage.PutItem(DskItem);
-  end;
-  if not (DskItem is TCustomJobDskItem) then Exit;
-
-  CustDskItem := TCustomJobDskItem(DskItem);
-  if IsFromDskItem and (not IsNewDskItem) then
-  begin
-    Self.Left := CustDskItem.WindowPos.Left;
-    Self.Top := CustDskItem.WindowPos.Top;
-    Self.Width := CustDskItem.WindowPos.Right - CustDskItem.WindowPos.Left;
-    Self.Height := CustDskItem.WindowPos.Bottom - CustDskItem.WindowPos.Top;
-    if CustDskItem.IsMaximized then
-    begin
-      Self.WindowState := wsMaximized;
-    end;
-  end else
-  begin
-    if (Self.WindowState = wsNormal) then
-    begin
-      CustDskItem.FWindowPos.Left := Self.Left;
-      CustDskItem.FWindowPos.Top := Self.Top;
-      CustDskItem.FWindowPos.Right := Self.Left + Self.Width;
-      CustDskItem.FWindowPos.Bottom := Self.Top + Self.Height;
-    end;
-    CustDskItem.IsMaximized := (Self.WindowState = wsMaximized);
   end;
 end;
 
@@ -404,23 +368,12 @@ end;
 procedure TCustomJobEditorItem.Perform;
 begin
   TabEditorsManager.AddEditor(Self, FForm);
-  FForm.Show();
 end;
 
 procedure TCustomDialogForm.AdditionDataChange(Sender: TObject);
 begin
   if IsLoading then Exit;
   IsModified := True;
-end;
-
-procedure TCustomDialogForm.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key = Ord('S')) and (ssCtrl	in Shift) then
-  begin
-    DoApply();
-    Key := 0;
-  end;
 end;
 
 function TCustomDialogForm.CanCloseForm: Boolean;
@@ -438,12 +391,6 @@ begin
       else Result := False;
     end;
   end;
-end;
-
-procedure TCustomDialogForm.FormCloseQuery(Sender: TObject;
-  var CanClose: Boolean);
-begin
-  CanClose := CanCloseForm();
 end;
 
 procedure TCustomJobEditorItem.SetReadOnly(const Value: Boolean);
