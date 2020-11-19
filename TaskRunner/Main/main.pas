@@ -96,8 +96,6 @@ type
 var
   MainForm: TMainForm;
 
-//TODO http://codeverge.com/embarcadero.cppbuilder.nontech/close-button-in-pagecontrol/1081588
-
 implementation
 
 {$R *.DFM}

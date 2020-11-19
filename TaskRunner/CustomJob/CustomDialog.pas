@@ -37,6 +37,7 @@ type
     procedure SetData(const Value: TJobDataItem);
     procedure SetReadOnly(const Value: Boolean);
     procedure DoOnDataStateChange(Sender: TObject);
+    procedure DoOnDataChange(Sender: TObject);
     procedure SetIsRunning(const Value: Boolean);
     function GetIsModified: Boolean;
     function CanCloseForm: Boolean;
@@ -228,6 +229,8 @@ begin
       end;
     end;
 
+    FWrapper.TabManager.UpdateEditor(FWrapper, FIsModified);
+
     UpdateControls();
   end;
 end;
@@ -250,6 +253,7 @@ begin
     if (FData <> nil) then
     begin
       FData.OnDataStateChange := DoOnDataStateChange;
+      FData.OnDataChange := DoOnDataChange;
     end;
   end;
 end;
@@ -306,6 +310,11 @@ begin
   end;
 end;
 
+procedure TCustomDialogForm.DoOnDataChange(Sender: TObject);
+begin
+  FWrapper.TabManager.UpdateEditor(FWrapper, FIsModified);
+end;
+
 procedure TCustomDialogForm.DoOnDataStateChange(Sender: TObject);
 begin
   IsRunning := (Sender as TJobDataItem).DataState = jsRun;
@@ -336,6 +345,7 @@ begin
   if (FData <> nil) then
   begin
     FData.OnDataStateChange := nil;
+    FData.OnDataChange := nil;
   end;
 
   inherited Destroy();

@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.Menus, System.UITypes,
-  System.Generics.Collections, JobClasses, OperationUtils;
+  System.Generics.Collections, JobClasses, OperationUtils, System.ImageList,
+  Vcl.ImgList;
 
 type
   TTabEditorsManager = class;
@@ -14,6 +15,7 @@ type
     PageControl: TPageControl;
     PopupMenu: TPopupMenu;
     Close1: TMenuItem;
+    ImageList1: TImageList;
     procedure PageControlContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
     procedure Close1Click(Sender: TObject);
@@ -51,11 +53,15 @@ type
 
     procedure AddEditor(AEditor: TJobEditorItem; AEditorControl: TWinControl);
     procedure RemoveEditor(AEditor: TJobEditorItem);
+    procedure UpdateEditor(AEditor: TJobEditorItem; AIsModified: Boolean);
   end;
 
 implementation
 
 {$R *.dfm}
+
+const
+  ModifiedImages: array[Boolean] of Integer = (-1, 0);
 
 { TTabEditorsFrame }
 
@@ -126,6 +132,7 @@ begin
     ts := TTabSheet.Create(FTabEditorsFrame);
     ts.PageControl := FTabEditorsFrame.PageControl;
     ts.Caption := AEditor.Data.JobName;
+    ts.ImageIndex := -1;
 
     ti.Editor := AEditor;
     ti.Tab := ts;
@@ -175,6 +182,18 @@ begin
     ti.Tab.Free();
     FTabItems.Remove(ti);
     ActivateEditor();
+  end;
+end;
+
+procedure TTabEditorsManager.UpdateEditor(AEditor: TJobEditorItem; AIsModified: Boolean);
+var
+  ti: TTabItem;
+begin
+  ti := FindTabItem(AEditor);
+  if (ti <> nil) then
+  begin
+    ti.Tab.ImageIndex := ModifiedImages[AIsModified];
+    ti.Tab.Caption := AEditor.Data.JobName;
   end;
 end;
 
