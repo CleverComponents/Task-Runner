@@ -15,7 +15,7 @@ type
     PageControl: TPageControl;
     PopupMenu: TPopupMenu;
     Close1: TMenuItem;
-    ImageList1: TImageList;
+    imgTabs: TImageList;
     procedure PageControlContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
     procedure Close1Click(Sender: TObject);
