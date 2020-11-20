@@ -1,8 +1,4 @@
 inherited GlobalParamsJobItemForm: TGlobalParamsJobItemForm
-  Caption = 'Global Parameters Editor'
-  OldCreateOrder = False
-  PixelsPerInch = 96
-  TextHeight = 13
   inherited PageControl: TPageControl
     inherited tabDetails: TTabSheet
       inherited Panel2: TPanel

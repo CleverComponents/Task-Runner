@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, ToolWin, ComCtrls, ImgList, OperationClasses, JobClasses, XMLUtils,
-  System.ImageList, JobUtils;
+  System.ImageList, JobUtils, JobsMain, TabEditors, Vcl.ExtCtrls;
 
 type
   TMainForm = class(TForm)
@@ -58,21 +58,28 @@ type
     mnuEnableJobItem: TMenuItem;
     mnuDisableJobItem: TMenuItem;
     N2: TMenuItem;
+    pJobForm: TPanel;
+    splitJobForm: TSplitter;
+    pJobEditors: TPanel;
+    mnuSaveJob: TMenuItem;
+    btnSaveJob: TToolButton;
+    mnuCloseJob: TMenuItem;
     procedure mnuExitClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure mnuGlobalParametersClick(Sender: TObject);
     procedure mnuFileClick(Sender: TObject);
     procedure About1Click(Sender: TObject);
     procedure mnuJobInspectorClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
     FConsoleRunLogName: string;
-    FOldWindowPos: TStoreFormStruct;
     FGlobalParameters: TJobOperationParams;
-    FJobForm: TForm;
+    FJobForm: TJobsMainFrame;
+    FTabEditors: TTabEditorsFrame;
     FJobDSKFileName: string;
     FJobParamsFileName: string;
     FIsConsoleErrors: Boolean;
+    FOldStoreFormStruct: TStoreFormStruct;
+
     procedure RegisterMenuItems;
     procedure LoadDesktop(AFileName: String);
     procedure SaveDesktop(AFileName: String);
@@ -94,7 +101,7 @@ implementation
 {$R *.DFM}
 
 uses
-  JobsMain, OperationUtils, JobConsts, GlobalParamsJobItemFrm, JobDskClasses, AboutForm,
+  OperationUtils, JobConsts, GlobalParamsJobItemFrm, JobDskClasses, AboutForm,
   Winapi.msxml;
 
 procedure TMainForm.RegisterMenuItems;
@@ -117,6 +124,8 @@ begin
   RegisterMenuItem(opExportJob, mnuExportJob);
   RegisterMenuItem(opEnableJob, mnuEnableJobItem);
   RegisterMenuItem(opDisableJob, mnuDisableJobItem);
+  RegisterMenuItem(opSaveJob, mnuSaveJob, btnSaveJob);
+  RegisterMenuItem(opCloseJob, mnuCloseJob);
   RegisterMenuItem(opShowReferences, mnuJobReferences, btnReferences);
 end;
 
@@ -127,7 +136,7 @@ end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  CanClose := TJobsMainFrame(FJobForm).CanCloseForm();
+  CanClose := FJobForm.CanCloseForm();
 end;
 
 constructor TMainForm.Create(Owner: TComponent);
@@ -164,15 +173,19 @@ begin
   Caption := Format('%s v.%s (%s)', [cMainFormCaption, BuildNo, {$IFDEF WIN64}'x64'{$ELSE}'x86'{$ENDIF}]);
 
   RegisterMenuItems();
+
+  FTabEditors := TTabEditorsFrame.Create(nil);
+  FTabEditors.Parent := pJobEditors;
+  FTabEditors.Align := alClient;
+  
   FJobForm := TJobsMainFrame.Create(nil);
+  FJobForm.Parent := pJobForm;
+  FJobForm.Align := alClient;
 
-  ClientHeight := MainToolBar.Height;
-  Top := 0; Left := 0; Width := Screen.Width;
-  FJobForm.Left := Left;
-  FJobForm.Top := Top + Height;
+  FJobForm.TabManager := FTabEditors.TabManager;
+  FJobForm.OnGetGlobalParams := DoGetGlobalParams;
+  TJobOperationManager.Instance.CurrentOperationList := FJobForm.OperationList;
 
-  TJobsMainFrame(FJobForm).OnGetGlobalParams := DoGetGlobalParams;
-  TJobOperationManager.Instance.CurrentOperationList := TJobsMainFrame(FJobForm).OperationList;
   FJobDSKFileName := ExtractFilePath(ParamStr(0));
   if (FJobDSKFileName <> '') and (FJobDSKFileName[Length(FJobDSKFileName)] <> '\') then
   begin
@@ -182,16 +195,17 @@ begin
   FJobDSKFileName := FJobDSKFileName + cJobDeskTopFileName;
   LoadGlobalParameters(FJobParamsFileName);
   LoadDesktop(FJobDSKFileName);
+  
   if (ParamCount() > 0) then
   begin
     try
-      TJobsMainFrame(FJobForm).LoadMedia(ParamStr(1));
+      FJobForm.LoadMedia(ParamStr(1));
     except
-      TJobsMainFrame(FJobForm).NewMedia();
+      FJobForm.NewMedia();
     end;
   end else
   begin
-    TJobsMainFrame(FJobForm).NewMedia();
+    FJobForm.NewMedia();
   end;
 end;
 
@@ -209,10 +223,17 @@ destructor TMainForm.Destroy;
   end;
 
 begin
-  StoreGlobalParameters(FJobParamsFileName);
-  SaveDesktop(FJobDSKFileName);
-  FJobForm.Free();
-  FGlobalParameters.Free();
+  try
+    TJobOperationManager.Instance.CurrentOperationList := nil;
+
+    StoreGlobalParameters(FJobParamsFileName);
+    SaveDesktop(FJobDSKFileName);
+  finally
+    FJobForm.Free();
+    FTabEditors.Free();
+    FGlobalParameters.Free();
+  end;
+  
   inherited Destroy();
 end;
 
@@ -226,6 +247,8 @@ begin
   RootNode := Doc.createElement('FrameWork');
   Doc.appendChild(RootNode);
 
+  FillChar(Store, SizeOf(Store), 0);
+
   if (Self.WindowState = wsNormal) then
   begin
     Store.Left := Self.Left;
@@ -234,16 +257,15 @@ begin
     Store.Height := Self.Height;
   end else
   begin
-    Store := FOldWindowPos;
+    Store := FOldStoreFormStruct;
   end;
-  Store.Maximized := (Self.WindowState = wsMaximized);
 
   MainNode := RootNode.ownerDocument.createElement('MainForm');
   RootNode.appendChild(MainNode);
 
   FormToXML(Store, MainNode);
 
-  TJobsMainFrame(FJobForm).SaveDesktop(RootNode);
+  FJobForm.SaveDesktop(RootNode);
   SaveXMLToFile(AFileName, Doc);
 end;
 
@@ -268,21 +290,19 @@ begin
     if (Store.Height <> 0) then Self.Height := Store.Height;
     if (Store.Left <> 0) then Self.Left := Store.Left;
     if (Store.Top <> 0) then Self.Top := Store.Top;
-    FOldWindowPos.Width := Self.Width;
-    FOldWindowPos.Height := Self.Height;
-    FOldWindowPos.Left := Self.Left;
-    FOldWindowPos.Top := Self.Top;
-    if Store.Maximized then
-    begin
-      Self.WindowState := wsMaximized;
-    end;
   end;
-  TJobsMainFrame(FJobForm).LoadDesktop(RootNode);
+
+  FOldStoreFormStruct.Width := Self.Width;
+  FOldStoreFormStruct.Height := Self.Height;
+  FOldStoreFormStruct.Left := Self.Left;
+  FOldStoreFormStruct.Top := Self.Top;
+
+  FJobForm.LoadDesktop(RootNode);
 end;
 
 procedure TMainForm.mnuGlobalParametersClick(Sender: TObject);
 begin
-  EditGlobalParameters(TJobsMainFrame(FJobForm).JobManager, FGlobalParameters);
+  EditGlobalParameters(FJobForm.JobManager, FGlobalParameters);
 end;
 
 procedure TMainForm.DoGetGlobalParams(var Params: TJobOperationParams);
@@ -364,7 +384,7 @@ var
   OldEvent: TRunJobEvent;
 begin
   FConsoleRunLogName := ALogName;
-  JobMgr := (FJobForm as TJobsMainFrame).JobManager;
+  JobMgr := FJobForm.JobManager;
   OldEvent := JobMgr.OnFinishAction;
   JobMgr.OnFinishAction := DoFinishConsoleJob;
   JobMgr.RunJob(AJobName, False, False);
@@ -393,12 +413,7 @@ end;
 
 procedure TMainForm.mnuJobInspectorClick(Sender: TObject);
 begin
-  FJobForm.Show();
-end;
-
-procedure TMainForm.FormShow(Sender: TObject);
-begin
-  FJobForm.Show();
+  FJobForm.ShowForm();
 end;
 
 end.

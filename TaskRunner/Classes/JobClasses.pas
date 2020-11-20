@@ -11,12 +11,14 @@ type
 
   TJobItem = class;
   TJobVisitor = class;
+  TJobEditorItem = class;
 
   TRunJobEvent = procedure (Visitor: TJobVisitor) of object;
   TRunJobMessageEvent = procedure (Visitor: TJobVisitor; const ALog, AErrors: string) of object;
   TJobItemEvent = procedure (JobItem: TJobItem) of object;
   TJobStateEvent = procedure (AJobItem: TJobItem; State: TJobState) of object;
   TOnGetGlobalParamsEvent = procedure (var Params: TJobOperationParams) of object;
+  TJobEditorEvent = procedure (AJobItem: TJobItem; AEditor: TJobEditorItem) of object;
 
   TJobVisitor = class
   private
@@ -155,6 +157,7 @@ type
     constructor Create(AData: TJobDataItem); virtual;
     destructor Destroy; override;
     procedure Perform; virtual; abstract;
+
     property Data: TJobDataItem read FData;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly;
   end;
@@ -229,6 +232,8 @@ type
     FOnGetGlobalParams: TOnGetGlobalParamsEvent;
     FOnItemPerformedAction: TRunJobMessageEvent;
     FReferences: TJobOperationParams;
+    FOnBeforeRun: TJobItemEvent;
+    FOnCreateEditor: TJobEditorEvent;
 
     function GetRootItems(Index: Integer): TJobItem;
     function GetRootItemsCount: Integer;
@@ -244,6 +249,8 @@ type
   protected
     procedure DataStateChanged(AJobItem: TJobItem; State: TJobState); virtual;
     procedure DataChanged(AJobItem: TJobItem); virtual;
+    procedure DoBeforeRun(AJobItem: TJobItem); virtual;
+    procedure DoCreateEditor(AJobItem: TJobItem; AEditor: TJobEditorItem); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -275,6 +282,8 @@ type
     property OnDataStateChanged: TJobStateEvent read FOnDataStateChanged write FOnDataStateChanged;
     property OnDataChanged: TJobItemEvent read FOnDataChanged write FOnDataChanged;
     property OnGetGlobalParams: TOnGetGlobalParamsEvent read FOnGetGlobalParams write FOnGetGlobalParams;
+    property OnBeforeRun: TJobItemEvent read FOnBeforeRun write FOnBeforeRun;
+    property OnCreateEditor: TJobEditorEvent read FOnCreateEditor write FOnCreateEditor;
   end;
 
   TJobEditorManager = class
@@ -927,6 +936,7 @@ begin
     if (EditorClass <> nil) then
     begin
       Editor := EditorClass.Create(AItem.FData);
+      DoCreateEditor(AItem, Editor);
     end;
   end;
   if (Editor = nil) then
@@ -934,6 +944,7 @@ begin
     raise Exception.Create(cNonRegisteredEditor);
   end;
   Editor.ReadOnly := IsReadOnly;
+
   Editor.Perform();
 end;
 
@@ -1011,6 +1022,8 @@ procedure TJobManager.RunJob(AItem: TJobItem; IsUnitJob: Boolean; IsAsynch: Bool
 var
   Visitor: TThreadVisitor;
 begin
+  DoBeforeRun(AItem);
+
   Visitor := TThreadVisitor.Create(AItem, IsUnitJob);
   Visitor.OnStart := DoOnStart;
   Visitor.OnFinish := DoOnFinish;
@@ -1057,6 +1070,22 @@ begin
     RootNode.appendChild(ChildNode);
     (ChildNode as IXMLDOMElement).setAttribute('dataclassname', AItem.FData.ClassName);
     AItem.Store(ChildNode);
+  end;
+end;
+
+procedure TJobManager.DoCreateEditor(AJobItem: TJobItem; AEditor: TJobEditorItem);
+begin
+  if Assigned(OnCreateEditor) then
+  begin
+    OnCreateEditor(AJobItem, AEditor);
+  end;
+end;
+
+procedure TJobManager.DoBeforeRun(AJobItem: TJobItem);
+begin
+  if Assigned(OnBeforeRun) then
+  begin
+    OnBeforeRun(AJobItem);
   end;
 end;
 

@@ -1,9 +1,9 @@
 inherited ScripterJobItemForm: TScripterJobItemForm
-  Caption = 'Scripter Editor'
-  PixelsPerInch = 96
-  TextHeight = 13
   inherited PageControl: TPageControl
     inherited tabDetails: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 4
+      ExplicitWidth = 524
       inherited sbScript: TStatusBar
         Panels = <
           item
@@ -14,10 +14,6 @@ inherited ScripterJobItemForm: TScripterJobItemForm
       end
     end
     inherited tabAddition: TTabSheet
-      ExplicitLeft = 4
-      ExplicitTop = 24
-      ExplicitWidth = 490
-      ExplicitHeight = 300
       inherited pAddTop: TPanel
         object Label4: TLabel [3]
           Left = 258
@@ -41,6 +37,9 @@ inherited ScripterJobItemForm: TScripterJobItemForm
           TabOrder = 6
           OnChange = cmbLanguageChange
         end
+      end
+      inherited sbDescription: TStatusBar
+        ExplicitWidth = 506
       end
     end
   end

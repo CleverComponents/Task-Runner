@@ -6,6 +6,7 @@ inherited ConnectionSetupForm: TConnectionSetupForm
   ClientHeight = 206
   ClientWidth = 352
   OldCreateOrder = False
+  Position = poOwnerFormCenter
   OnCreate = FormCreate
   OnShow = FormShow
   ExplicitWidth = 358

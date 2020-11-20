@@ -6,7 +6,10 @@ inherited ItemListViewForm: TItemListViewForm
   ClientHeight = 195
   ClientWidth = 318
   OldCreateOrder = False
+  Position = poOwnerFormCenter
   OnCreate = FormCreate
+  ExplicitWidth = 324
+  ExplicitHeight = 224
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -50,7 +53,6 @@ inherited ItemListViewForm: TItemListViewForm
     Width = 87
     Height = 21
     Style = csDropDownList
-    ItemHeight = 13
     TabOrder = 1
   end
 end

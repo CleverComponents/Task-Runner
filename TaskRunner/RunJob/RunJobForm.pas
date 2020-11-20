@@ -10,12 +10,9 @@ uses
 
 type
   TRunJobfrm = class(TForm)
-    pBottom: TPanel;
-    Panel1: TPanel;
-    btnClose: TButton;
     PageControl: TPageControl;
-    tabJobs: TTabSheet;
-    tabLog: TTabSheet;
+    tabDescription: TTabSheet;
+    tabErrors: TTabSheet;
     MemoLog: TJobRichEdit;
     sidebarSplitter: TSplitter;
     MemoError: TJobRichEdit;
@@ -31,10 +28,9 @@ type
     MemDataisrun: TBooleanField;
     MemDatacurrentjob: TIntegerField;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure btnCloseClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure PageControlChange(Sender: TObject);
-    procedure ListDblClick(Sender: TObject);
+    procedure ListCellClick(Column: TColumn);
+    procedure ListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     procedure WMActivate(var Message: TWMActivate); message WM_ACTIVATE;
     procedure UpdateVisitorItem(AState: TJobRunState; Visitor: TJobVisitor; IsRootItem: Boolean;
@@ -45,6 +41,7 @@ type
     procedure DoItemPerformed(Visitor: TJobVisitor; const ALog, AErrors: string);
     procedure DoHandling();
     function CanCloseForm: Boolean;
+    procedure ShowDetails;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WndProc(var Message: TMessage); override;
@@ -276,11 +273,6 @@ begin
   Application.ProcessMessages();
 end;
 
-procedure TRunJobfrm.btnCloseClick(Sender: TObject);
-begin
-  Close();
-end;
-
 function TRunJobfrm.CanCloseForm(): Boolean;
 var
   S: String;
@@ -294,14 +286,11 @@ begin
   CanClose := CanCloseForm();
 end;
 
-procedure TRunJobfrm.PageControlChange(Sender: TObject);
+procedure TRunJobfrm.ShowDetails;
 var
   bookmark: TBookmark;
   visitor: Integer;
-  tab: TTabSheet;
 begin
-  tab := PageControl.ActivePage;
-  if (tab = nil) or (CompareText(tab.Name, 'tabLog') <> 0) then Exit;
   MemData.DisableControls();
   try
     if (MemDatajobname.AsString <> '') then
@@ -337,10 +326,18 @@ begin
   DoHandling();
 end;
 
-procedure TRunJobfrm.ListDblClick(Sender: TObject);
+procedure TRunJobfrm.ListCellClick(Column: TColumn);
 begin
-  PageControl.ActivePage := tabLog;
-  PageControlChange(nil);
+  ShowDetails();
+end;
+
+procedure TRunJobfrm.ListKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then
+  begin
+    ShowDetails();
+  end;
 end;
 
 procedure TRunJobfrm.ShowProgress(AJobManager: TJobManager);

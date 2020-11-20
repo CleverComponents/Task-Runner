@@ -1,93 +1,42 @@
 object CustomDialogForm: TCustomDialogForm
-  Left = 264
-  Top = 109
-  Caption = 'CustomDialogForm'
-  ClientHeight = 363
-  ClientWidth = 498
-  Color = clBtnFace
+  Left = 0
+  Top = 0
+  Width = 532
+  Height = 451
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  KeyPreview = True
-  OldCreateOrder = False
-  OnCloseQuery = FormCloseQuery
-  OnKeyDown = FormKeyDown
-  PixelsPerInch = 96
-  TextHeight = 13
-  object pBottom: TPanel
-    Left = 0
-    Top = 328
-    Width = 498
-    Height = 35
-    Align = alBottom
-    BevelOuter = bvNone
-    TabOrder = 0
-    object Panel1: TPanel
-      Left = 269
-      Top = 0
-      Width = 229
-      Height = 35
-      Align = alRight
-      BevelOuter = bvNone
-      Caption = 'Panel1'
-      TabOrder = 0
-      object btnOK: TButton
-        Left = 6
-        Top = 8
-        Width = 72
-        Height = 22
-        Caption = 'OK'
-        Default = True
-        ModalResult = 1
-        TabOrder = 0
-        OnClick = btnOKClick
-      end
-      object btnCancel: TButton
-        Left = 79
-        Top = 8
-        Width = 72
-        Height = 22
-        Cancel = True
-        Caption = 'Cancel'
-        ModalResult = 2
-        TabOrder = 1
-        OnClick = btnCancelClick
-      end
-      object btnApply: TButton
-        Left = 152
-        Top = 8
-        Width = 72
-        Height = 22
-        Caption = 'Apply'
-        TabOrder = 2
-        OnClick = btnApplyClick
-      end
-    end
-  end
+  ParentFont = False
+  TabOrder = 0
   object PageControl: TPageControl
     Left = 0
     Top = 0
-    Width = 498
-    Height = 328
+    Width = 532
+    Height = 451
     ActivePage = tabAddition
     Align = alClient
-    TabOrder = 1
+    TabOrder = 0
+    TabPosition = tpBottom
     object tabDetails: TTabSheet
       Caption = 'Details'
       ExplicitLeft = 0
       ExplicitTop = 0
       ExplicitWidth = 0
-      ExplicitHeight = 0
+      ExplicitHeight = 341
     end
     object tabAddition: TTabSheet
       Caption = 'Addition'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pAddTop: TPanel
         Left = 0
         Top = 0
-        Width = 490
+        Width = 524
         Height = 47
         Align = alTop
         BevelOuter = bvNone
@@ -128,8 +77,8 @@ object CustomDialogForm: TCustomDialogForm
       object MemoDescription: TJobRichEdit
         Left = 0
         Top = 47
-        Width = 490
-        Height = 234
+        Width = 524
+        Height = 359
         Align = alClient
         Font.Charset = RUSSIAN_CHARSET
         Font.Color = clWindowText
@@ -150,8 +99,8 @@ object CustomDialogForm: TCustomDialogForm
       end
       object sbDescription: TStatusBar
         Left = 0
-        Top = 281
-        Width = 490
+        Top = 406
+        Width = 524
         Height = 19
         Panels = <
           item

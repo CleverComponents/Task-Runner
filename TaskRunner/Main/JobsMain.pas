@@ -6,10 +6,10 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, System.UITypes, System.Variants, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Grids,
   OperationUtils, JobClasses, JobCtrls, OperationClasses, JobDskClasses, Vcl.ImgList,
-  Winapi.msxml, XMLUtils, Vcl.Menus, ReferendesForm, System.ImageList, JobConsts;
+  Winapi.msxml, XMLUtils, Vcl.Menus, ReferendesForm, System.ImageList, JobConsts, TabEditors;
 
 type
-  TJobsMainFrame = class(TForm)
+  TJobsMainFrame = class(TFrame)
     pCenter: TPanel;
     odMediaFile: TOpenDialog;
     sdMediaFile: TSaveDialog;
@@ -21,6 +21,7 @@ type
     MemoDescription: TJobRichEdit;
     JobsList: TJobTreeView;
     JobPopupMenu: TPopupMenu;
+    Bevel1: TBevel;
     procedure JobsListChange(Sender: TObject; Node: TTreeNode);
     procedure JobsListDeletion(Sender: TObject; Node: TTreeNode);
     procedure JobsListDblClick(Sender: TObject);
@@ -47,6 +48,7 @@ type
     FJobClipBoard: TJobItem;
     FOnGetGlobalParams: TOnGetGlobalParamsEvent;
     FReferencesForm: TJobsReferencesFrame;
+    FTabManager: TTabEditorsManager;
 
     procedure SetFlowAction(AFlowAction: TFlowAction);
     function InternalInsertItem(AParentItem: TJobItem; IsSubItem: Boolean = False): TJobItem;
@@ -79,6 +81,8 @@ type
     procedure DoLoadLastMedia(Params: TJobOperationParams; var Success: Boolean);
     procedure UpdateTreeList;
     procedure UnlinkChildItems(Node: TTreeNode);
+    procedure DoBeforeRun(AJobItem: TJobItem);
+    procedure DoCreateEditor(AJobItem: TJobItem; AEditor: TJobEditorItem);
   protected
     procedure AddOperations; virtual;
     procedure UpdateControls; virtual;
@@ -87,20 +91,24 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function CanCloseForm: Boolean;
+    procedure ShowForm;
     procedure NewMedia;
     procedure LoadMedia(AFileName: String);
     procedure LoadDesktop(ANode: IXMLDOMNode);
     procedure SaveDesktop(ANode: IXMLDOMNode);
+
     property OperationList: TFormOperationList read FOperationList;
     property IsModified: Boolean read FIsModified write SetIsModified;
     property JobManager: TJobManager read FJobManager;
+    property TabManager: TTabEditorsManager read FTabManager write FTabManager;
+
     property OnGetGlobalParams: TOnGetGlobalParamsEvent read FOnGetGlobalParams write FOnGetGlobalParams;
   end;
 
 implementation
 
 uses
-  SelectJobItem, RunJobForm;
+  SelectJobItem, RunJobForm, CustomDialog;
 
 {$R *.DFM}
 
@@ -271,6 +279,11 @@ begin
   end;
 end;
 
+procedure TJobsMainFrame.DoCreateEditor(AJobItem: TJobItem; AEditor: TJobEditorItem);
+begin
+  (AEditor as TCustomJobEditorItem).TabManager := TabManager;
+end;
+
 procedure TJobsMainFrame.DoEditJobItem(Sender: TObject);
 var
   Item: TJobItem;
@@ -362,9 +375,13 @@ begin
   FMediaFileName := '';
   AddOperations();
   UpdateControls();
+
   FJobManager.OnDataStateChanged := DoDataStateChanged;
   FJobManager.OnDataChanged := DoDataChanged;
   FJobManager.OnGetGlobalParams := DoGetGlobalParams;
+  FJobManager.OnBeforeRun := DoBeforeRun;
+  FJobManager.OnCreateEditor := DoCreateEditor;
+
   RegisterGlobalOperation(gopLoadLastMedia, DoLoadLastMedia);
 end;
 
@@ -601,11 +618,19 @@ begin
   DoEditJobItem(nil);
 end;
 
+procedure TJobsMainFrame.DoBeforeRun(AJobItem: TJobItem);
+var
+  RunFrm: TRunJobfrm;
+begin
+  RunFrm := TRunJobfrm.Instance;
+  RunFrm.FreeNotification(Self);
+  RunFrm.ShowProgress(FJobManager);
+end;
+
 procedure TJobsMainFrame.DoStartJobAt(Sender: TObject);
 var
   i: Integer;
   Node: TTreeNode;
-  RunFrm: TRunJobfrm;
 begin
   for i := 0 to JobsList.Items.Count - 1 do
   begin
@@ -616,9 +641,6 @@ begin
       begin
         raise Exception.Create(cJobModified);
       end;
-      RunFrm := TRunJobfrm.Instance;
-      RunFrm.FreeNotification(Self);
-      RunFrm.ShowProgress(FJobManager);
       FJobManager.RunJob(TJobItem(Node.Data), False);
     end;
   end;
@@ -674,6 +696,11 @@ begin
     FIsModified := Value;
     UpdateControls();
   end;
+end;
+
+procedure TJobsMainFrame.ShowForm;
+begin
+  Parent.Width := 320;
 end;
 
 procedure TJobsMainFrame.JobsListStartDrag(Sender: TObject; var DragObject: TDragObject);
@@ -955,10 +982,7 @@ begin
   if (ChildNode <> nil) then
   begin
     XMLToForm(Store, ChildNode);
-    Self.Width := Store.Width;
-    Self.Height := Store.Height;
-    Self.Left := Store.Left;
-    Self.Top := Store.Top;
+    Self.Parent.Width := Store.Width;
   end;
   ChildNode := ANode.selectSingleNode('Projects');
   if (ChildNode <> nil) then
@@ -974,11 +998,7 @@ var
 begin
   ChildNode := ANode.ownerDocument.createElement('InspectorForm');
   ANode.appendChild(ChildNode);
-  Store.Width := Self.Width;
-  Store.Height := Self.Height;
-  Store.Left := Self.Left;
-  Store.Top := Self.Top;
-  Store.Maximized := False;
+  Store.Width := Self.Parent.Width;
   FormToXML(Store, ChildNode);
   ChildNode := ANode.ownerDocument.createElement('Projects');
   ANode.appendChild(ChildNode);

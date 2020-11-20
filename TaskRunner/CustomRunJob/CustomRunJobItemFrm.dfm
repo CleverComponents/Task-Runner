@@ -1,16 +1,16 @@
 inherited CustomRunJobItemForm: TCustomRunJobItemForm
-  Left = 594
-  Top = 219
-  Caption = 'Custom Run Editor'
-  PixelsPerInch = 96
-  TextHeight = 13
   inherited PageControl: TPageControl
     ActivePage = tabAddition
     inherited tabDetails: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 4
+      ExplicitWidth = 524
       inherited memoScript: TJobRichEdit
         Top = 53
-        Height = 229
+        Height = 353
         TabOrder = 1
+        ExplicitTop = 53
+        ExplicitHeight = 353
       end
       inherited sbScript: TStatusBar
         Panels = <
@@ -23,11 +23,12 @@ inherited CustomRunJobItemForm: TCustomRunJobItemForm
       object Panel2: TPanel
         Left = 0
         Top = 0
-        Width = 484
+        Width = 524
         Height = 53
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
+        ExplicitWidth = 484
         object Label4: TLabel
           Left = 2
           Top = 7

@@ -418,6 +418,8 @@ end;
 
 destructor TJobOperationItem.Destroy;
 begin
+  Visible := False;
+
   if (FOwner <> nil) then
   begin
     FOwner.FList.Remove(Self);
@@ -595,7 +597,7 @@ var
   i: Integer;
   Item: TJobOperationItem;
 begin
-  for i := 0 to FList.Count - 1 do
+  for i := FList.Count - 1 downto 0 do
   begin
     Item := TJobOperationItem(FList[i]);
     if (CompareText(Item.OperationType, AOperationType) = 0) then

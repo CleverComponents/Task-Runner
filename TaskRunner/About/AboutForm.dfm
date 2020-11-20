@@ -3,8 +3,11 @@ inherited AboutDialog: TAboutDialog
   Caption = 'About'
   ClientHeight = 200
   ClientWidth = 300
+  Position = poMainFormCenter
   Scaled = False
   OnKeyDown = FormKeyDown
+  ExplicitWidth = 300
+  ExplicitHeight = 200
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage

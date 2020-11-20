@@ -12,6 +12,7 @@ type
     btnConnection: TButton;
     cmbPerformWith: TJobComboBox;
     lblPerformWith: TLabel;
+    pConnection: TPanel;
     procedure btnConnectionClick(Sender: TObject);
     procedure cmbPerformWithChange(Sender: TObject);
   private

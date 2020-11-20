@@ -1,37 +1,40 @@
 object JobsMainFrame: TJobsMainFrame
-  Left = 321
-  Top = 243
-  BorderStyle = bsSizeToolWin
-  Caption = 'Job Inspector'
-  ClientHeight = 371
-  ClientWidth = 231
-  Color = clBtnFace
+  Left = 0
+  Top = 0
+  Width = 320
+  Height = 413
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
-  PixelsPerInch = 96
-  TextHeight = 13
-  object pCenter: TPanel
+  ParentFont = False
+  TabOrder = 0
+  object Bevel1: TBevel
     Left = 0
     Top = 0
-    Width = 231
-    Height = 334
+    Width = 320
+    Height = 2
+    Align = alTop
+  end
+  object pCenter: TPanel
+    Left = 0
+    Top = 2
+    Width = 320
+    Height = 374
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
     object pFlowAction: TPanel
       Left = 0
       Top = 0
-      Width = 231
+      Width = 320
       Height = 31
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 0
       object pRightFlowAction: TPanel
-        Left = 46
+        Left = 135
         Top = 0
         Width = 185
         Height = 31
@@ -59,8 +62,8 @@ object JobsMainFrame: TJobsMainFrame
     object JobsList: TJobTreeView
       Left = 0
       Top = 31
-      Width = 231
-      Height = 303
+      Width = 320
+      Height = 343
       Align = alClient
       Constraints.MinWidth = 10
       DragMode = dmAutomatic
@@ -83,8 +86,8 @@ object JobsMainFrame: TJobsMainFrame
   end
   object MemoDescription: TJobRichEdit
     Left = 0
-    Top = 334
-    Width = 231
+    Top = 376
+    Width = 320
     Height = 37
     Align = alBottom
     Font.Charset = RUSSIAN_CHARSET
