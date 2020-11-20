@@ -28,7 +28,7 @@ type
     btnOpenMedia: TToolButton;
     btnSaveMedia: TToolButton;
     btnNewMedia: TToolButton;
-    imglMainBar: TImageList;
+    imgMenu: TImageList;
     ToolButton1: TToolButton;
     btnStarJobAt: TToolButton;
     btnStopAllJobs: TToolButton;
@@ -170,7 +170,7 @@ begin
   FIsConsoleErrors := False;
   FGlobalParameters := TJobOperationParams.Create();
 
-  Caption := Format('%s v.%s (%s)', [cMainFormCaption, BuildNo, {$IFDEF WIN64}'x64'{$ELSE}'x86'{$ENDIF}]);
+  Caption := GetMainFormCaption('');
 
   RegisterMenuItems();
 

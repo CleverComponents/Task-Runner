@@ -120,10 +120,24 @@ function CheckWordExists(const Buffer, NeededString: String): Boolean;
 //function GetSettingsDirectory: string;
 function GetOwnProgramName: string;
 
+function GetMainFormCaption(const AMedia: string): string;
+
 implementation
 
 uses
   JobConsts, Consts, XMLUtils;
+
+
+function GetMainFormCaption(const AMedia: string): string;
+begin
+  if (AMedia <> '') then
+  begin
+    Result := AMedia;
+  end else
+  begin
+    Result := Format('Task Runner v.%s (%s)', [BuildNo, {$IFDEF WIN64}'x64'{$ELSE}'x86'{$ENDIF}]);
+  end;
+end;
 
 function GetOwnProgramName: string;
 var

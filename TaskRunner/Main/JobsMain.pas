@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, System.UITypes, System.Variants, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Grids,
   OperationUtils, JobClasses, JobCtrls, OperationClasses, JobDskClasses, Vcl.ImgList,
-  Winapi.msxml, XMLUtils, Vcl.Menus, ReferendesForm, System.ImageList, JobConsts, TabEditors;
+  Winapi.msxml, XMLUtils, Vcl.Menus, ReferendesForm, System.ImageList, JobConsts, JobUtils, TabEditors;
 
 type
   TJobsMainFrame = class(TFrame)
@@ -17,7 +17,7 @@ type
     pRightFlowAction: TPanel;
     Label1: TLabel;
     edtFlowAction: TJobComboBox;
-    ingJobFlowAction: TImageList;
+    imgJobFlowAction: TImageList;
     MemoDescription: TJobRichEdit;
     JobsList: TJobTreeView;
     JobPopupMenu: TPopupMenu;
@@ -519,18 +519,9 @@ begin
   Node := JobsList.Selected;
 
   frm := Application.MainForm;
-  if (FMediaFileName <> '') then
+  if (frm <> nil) then
   begin
-    if (frm <> nil) then
-    begin
-      frm.Caption := cMainFormCaption + ': ' + ExtractFileName(FMediaFileName);
-    end;
-  end else
-  begin
-    if (frm <> nil) then
-    begin
-      frm.Caption := cMainFormCaption;
-    end;
+    frm.Caption := GetMainFormCaption(FMediaFileName);
   end;
 
   FOperationList.EnableOperation(opAddJobSubItem, cnt = 1);
