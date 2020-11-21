@@ -71,6 +71,7 @@ var fs = require('fs');
 fs.writeFileSync("c:\\Users\\Public\\JavaScriptTest.txt", "\ufeff" + text);
 
 jobLog.add("Saved to file: " + text);
+
 ]]></Script>
 					<ErrorWords></ErrorWords>
 					<Language>JavaScript</Language>

@@ -138,43 +138,27 @@ begin
 end;
 
 function GetOwnProgramName: string;
-var
-  ind: Integer;
 begin
-  Result := ExtractFileName(ParamStr(0));
-  ind := LastDelimiter('.', Result);
-  if (ind > 0) then
-  begin
-    Result := system.Copy(Result, 1, ind - 1);
-  end;
+  Result := 'TaskRunner';
 end;
 
 function GetSettingsDirectory: string;
 begin
-  Result := TPath.GetDocumentsPath();
-end;
-
-{var
-  verinfo: TOSVersionInfo;
-begin
-  ZeroMemory(@verinfo, SizeOf(verinfo));
-  verinfo.dwOSVersionInfoSize := SizeOf(verinfo);
-  GetVersionEx(verinfo);
-  if (verinfo.dwPlatformId = VER_PLATFORM_WIN32_NT) and (verinfo.dwMajorVersion > 3) then
+  if (TOSVersion.Platform = pfWindows) and (TOSVersion.Major > 5) then
   begin
-//    GetUserProfileDirectory()
-    Result := ''; //TODO
+    Result := TPath.GetHomePath();
   end else
   begin
     Result := ExtractFilePath(ParamStr(0));
-    if (Result <> '') and (Result[Length(Result)] <> '\') then
-    begin
-      Result := Result + '\';
-    end;
-    Result := Result + GetOwnProgramName();
   end;
+
+  if (Result <> '') and (Result[Length(Result)] <> '\') then
+  begin
+    Result := Result + '\';
+  end;
+  Result := Result + GetOwnProgramName() + '\';
 end;
-}
+
 function CheckWordExists(const Buffer, NeededString: String): Boolean;
 var
   i, curpos, EndSymbol, len: Integer;

@@ -97,6 +97,8 @@ const
   cCursorPositionMask = 'Ln %s, Col %s';
   cMinDskEditorsCount = 10;
   cMinDskMediaCount = 5;
+
+  cCtrlShiftS = 24659;
   
 implementation
 

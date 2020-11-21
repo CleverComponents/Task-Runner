@@ -157,6 +157,7 @@ constructor TMainForm.Create(Owner: TComponent);
         FGlobalParameters.Load(MainNode);
       end;
     end else
+    if FileExists(AFileName) then
     begin
       try
         FGlobalParameters.LoadFromFile(AFileName);
@@ -165,8 +166,11 @@ constructor TMainForm.Create(Owner: TComponent);
     end;
   end;
 
+var
+  jobParamsFileName, jobDskFileName: string;
 begin
   inherited Create(Owner);
+
   FIsConsoleErrors := False;
   FGlobalParameters := TJobOperationParams.Create();
 
@@ -177,7 +181,7 @@ begin
   FTabEditors := TTabEditorsFrame.Create(nil);
   FTabEditors.Parent := pJobEditors;
   FTabEditors.Align := alClient;
-  
+
   FJobForm := TJobsMainFrame.Create(nil);
   FJobForm.Parent := pJobForm;
   FJobForm.Align := alClient;
@@ -186,21 +190,31 @@ begin
   FJobForm.OnGetGlobalParams := DoGetGlobalParams;
   TJobOperationManager.Instance.CurrentOperationList := FJobForm.OperationList;
 
+  mnuSaveMedia.ShortCut := cCtrlShiftS;
 
-{  FJobDSKFileName := GetSettingsDirectory();
-  FJobDSKFileName := GetOwnProgramName();}
+  jobParamsFileName := GetSettingsDirectory() + cJobGlobalParamsFileName;
+  jobDskFileName := GetSettingsDirectory() + cJobDeskTopFileName;
 
-  FJobDSKFileName := ExtractFilePath(ParamStr(0));
-  if (FJobDSKFileName <> '') and (FJobDSKFileName[Length(FJobDSKFileName)] <> '\') then
+  FJobParamsFileName := jobParamsFileName;
+  FJobDSKFileName := jobDskFileName;
+
+  if (not FileExists(FJobParamsFileName)) and (not FileExists(FJobDSKFileName)) then
   begin
-    FJobDSKFileName := FJobDSKFileName + '\';
+    FJobDSKFileName := ExtractFilePath(ParamStr(0));
+    if (FJobDSKFileName <> '') and (FJobDSKFileName[Length(FJobDSKFileName)] <> '\') then
+    begin
+      FJobDSKFileName := FJobDSKFileName + '\';
+    end;
+    FJobParamsFileName := FJobDSKFileName + cJobGlobalParamsFileName;
+    FJobDSKFileName := FJobDSKFileName + cJobDeskTopFileName;
   end;
-  FJobParamsFileName := FJobDSKFileName + cJobGlobalParamsFileName;
-  FJobDSKFileName := FJobDSKFileName + cJobDeskTopFileName;
 
   LoadGlobalParameters(FJobParamsFileName);
   LoadDesktop(FJobDSKFileName);
-  
+
+  FJobParamsFileName := jobParamsFileName;
+  FJobDSKFileName := jobDskFileName;
+
   if (ParamCount() > 0) then
   begin
     try
@@ -231,6 +245,7 @@ begin
   try
     TJobOperationManager.Instance.CurrentOperationList := nil;
 
+    ForceDirectories(GetSettingsDirectory());
     StoreGlobalParameters(FJobParamsFileName);
     SaveDesktop(FJobDSKFileName);
   finally

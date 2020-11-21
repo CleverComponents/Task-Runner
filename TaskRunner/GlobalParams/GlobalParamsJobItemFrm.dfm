@@ -12,6 +12,7 @@ object GlobalParamsJobItemForm: TGlobalParamsJobItemForm
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
+  Position = poOwnerFormCenter
   OnCloseQuery = FormCloseQuery
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
