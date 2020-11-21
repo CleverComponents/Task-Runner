@@ -55,6 +55,8 @@ const
     'OSQLUtilite', 'ADOLibrary');
 
 resourcestring
+  cGlobalParamsEditor = 'Global Parameters Editor';
+
   cMediaModified = 'The project has been modified, do you wish to save your changes?';
   cCallJobNonExist = 'The called job ''%s'' from project ''%s'' does not exist';
   cJobDataLocked = 'The job have been modified or run';

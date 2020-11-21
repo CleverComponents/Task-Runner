@@ -117,7 +117,7 @@ const
   BuildNo = {$I BuildNo.inc};
 
 function CheckWordExists(const Buffer, NeededString: String): Boolean;
-//function GetSettingsDirectory: string;
+function GetSettingsDirectory: string;
 function GetOwnProgramName: string;
 
 function GetMainFormCaption(const AMedia: string): string;
@@ -130,12 +130,10 @@ uses
 
 function GetMainFormCaption(const AMedia: string): string;
 begin
+  Result := Format('Task Runner %s %s', [BuildNo, {$IFDEF WIN64}'(x64)'{$ELSE}''{$ENDIF}]);
   if (AMedia <> '') then
   begin
-    Result := AMedia;
-  end else
-  begin
-    Result := Format('Task Runner v.%s (%s)', [BuildNo, {$IFDEF WIN64}'x64'{$ELSE}'x86'{$ENDIF}]);
+    Result := AMedia + ' - ' + Result;
   end;
 end;
 
@@ -151,8 +149,12 @@ begin
   end;
 end;
 
-{function GetSettingsDirectory: string;
-var
+function GetSettingsDirectory: string;
+begin
+  Result := TPath.GetDocumentsPath();
+end;
+
+{var
   verinfo: TOSVersionInfo;
 begin
   ZeroMemory(@verinfo, SizeOf(verinfo));

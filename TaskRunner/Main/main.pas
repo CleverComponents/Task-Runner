@@ -186,6 +186,10 @@ begin
   FJobForm.OnGetGlobalParams := DoGetGlobalParams;
   TJobOperationManager.Instance.CurrentOperationList := FJobForm.OperationList;
 
+
+{  FJobDSKFileName := GetSettingsDirectory();
+  FJobDSKFileName := GetOwnProgramName();}
+
   FJobDSKFileName := ExtractFilePath(ParamStr(0));
   if (FJobDSKFileName <> '') and (FJobDSKFileName[Length(FJobDSKFileName)] <> '\') then
   begin
@@ -193,6 +197,7 @@ begin
   end;
   FJobParamsFileName := FJobDSKFileName + cJobGlobalParamsFileName;
   FJobDSKFileName := FJobDSKFileName + cJobDeskTopFileName;
+
   LoadGlobalParameters(FJobParamsFileName);
   LoadDesktop(FJobDSKFileName);
   
@@ -302,7 +307,7 @@ end;
 
 procedure TMainForm.mnuGlobalParametersClick(Sender: TObject);
 begin
-  EditGlobalParameters(FJobForm.JobManager, FGlobalParameters);
+  TGlobalParamsJobItemForm.EditGlobalParameters(FJobForm.JobManager, FGlobalParameters);
 end;
 
 procedure TMainForm.DoGetGlobalParams(var Params: TJobOperationParams);
