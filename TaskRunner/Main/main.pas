@@ -200,11 +200,7 @@ begin
 
   if (not FileExists(FJobParamsFileName)) and (not FileExists(FJobDSKFileName)) then
   begin
-    FJobDSKFileName := ExtractFilePath(ParamStr(0));
-    if (FJobDSKFileName <> '') and (FJobDSKFileName[Length(FJobDSKFileName)] <> '\') then
-    begin
-      FJobDSKFileName := FJobDSKFileName + '\';
-    end;
+    FJobDSKFileName := AddTrailingDirSeparator(ExtractFilePath(ParamStr(0)));
     FJobParamsFileName := FJobDSKFileName + cJobGlobalParamsFileName;
     FJobDSKFileName := FJobDSKFileName + cJobDeskTopFileName;
   end;

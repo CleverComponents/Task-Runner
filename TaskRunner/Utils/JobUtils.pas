@@ -119,6 +119,7 @@ const
 function CheckWordExists(const Buffer, NeededString: String): Boolean;
 function GetSettingsDirectory: string;
 function GetOwnProgramName: string;
+function AddTrailingDirSeparator(const APath: string): string;
 
 function GetMainFormCaption(const AMedia: string): string;
 
@@ -142,21 +143,25 @@ begin
   Result := 'TaskRunner';
 end;
 
+function AddTrailingDirSeparator(const APath: string): string;
+begin
+  Result := APath;
+  if (Result <> '') and (Result[Length(Result)] <> TPath.DirectorySeparatorChar) then
+  begin
+    Result := Result + TPath.DirectorySeparatorChar;
+  end;
+end;
+
 function GetSettingsDirectory: string;
 begin
   if (TOSVersion.Platform = pfWindows) and (TOSVersion.Major > 5) then
   begin
-    Result := TPath.GetHomePath();
+    Result := AddTrailingDirSeparator(TPath.GetHomePath())
+      + GetOwnProgramName() + TPath.DirectorySeparatorChar;
   end else
   begin
-    Result := ExtractFilePath(ParamStr(0));
+    Result := AddTrailingDirSeparator(ExtractFilePath(ParamStr(0)));
   end;
-
-  if (Result <> '') and (Result[Length(Result)] <> '\') then
-  begin
-    Result := Result + '\';
-  end;
-  Result := Result + GetOwnProgramName() + '\';
 end;
 
 function CheckWordExists(const Buffer, NeededString: String): Boolean;
