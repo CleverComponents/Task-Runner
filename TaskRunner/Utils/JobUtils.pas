@@ -343,7 +343,8 @@ begin
   if (Pos(cJobInputFile, AFileName) > 0) then
   begin
     InputFileName := GetJobTempDir() + '\' + GetUniqueName() + '.run';
-    AInput.SaveToFile(InputFileName);
+    AInput.WriteBOM := False;
+    AInput.SaveToFile(InputFileName, TEncoding.UTF8);
     AFileName := ReplaceString(AFileName, cJobInputFile, '"' + InputFileName + '"');
   end else
   begin
@@ -381,7 +382,8 @@ begin
   UniqueName := GetJobTempDir() + '\' + GetUniqueName() + '.cmd';
   AInput := TStringList.Create();
   try
-    AFile.SaveToFile(UniqueName);
+    AFile.WriteBOM := False;
+    AFile.SaveToFile(UniqueName, TEncoding.UTF8);
     Result := PerformFile(UniqueName + ' > ' + cJobOutFile, AInput, AOutput, AErrors);
   finally
     AInput.Free();
@@ -403,7 +405,8 @@ begin
     if (Pos(cJobInputFile, AFile.Text) > 0) then
     begin
       InputFileName := GetJobTempDir() + '\' + GetUniqueName() + '.' + AScriptExt;
-      AInput.SaveToFile(InputFileName);
+      AInput.WriteBOM := False;
+      AInput.SaveToFile(InputFileName, TEncoding.UTF8);
       AFile.Text := ReplaceString(AFile.Text, cJobInputFile, '"' + InputFileName + '"');
     end else
     begin

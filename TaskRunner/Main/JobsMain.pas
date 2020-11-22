@@ -254,6 +254,7 @@ begin
     NewNode := JobsList.Items.AddObject(Node, AItem.JobName, AItem);
     NewNode.ImageIndex := Integer(AItem.FlowAction);
     NewNode.SelectedIndex := Integer(AItem.FlowAction);
+    NewNode.Selected := True;
     FJobManager.EditJobItem(TJobItem(NewNode.Data));
     UpdateControls();
   end;
@@ -273,6 +274,7 @@ begin
     NewNode := JobsList.Items.AddChildObject(Node, AItem.JobName, AItem);
     NewNode.ImageIndex := Integer(AItem.FlowAction);
     NewNode.SelectedIndex := Integer(AItem.FlowAction);
+    NewNode.Selected := True;
     Node.Expand(False);
     FJobManager.EditJobItem(TJobItem(NewNode.Data));
     UpdateControls();
@@ -452,6 +454,7 @@ begin
       NewNode := JobsList.Items.AddObject(Node, AItem.JobName, AItem);
       NewNode.ImageIndex := Integer(AItem.FlowAction);
       NewNode.SelectedIndex := Integer(AItem.FlowAction);
+      NewNode.Selected := True;
       InsertTreeItem(NewNode, AItem);
       FJobManager.EditJobItem(TJobItem(NewNode.Data));
       IsModified := True;
@@ -838,6 +841,7 @@ begin
     NewNode := JobsList.Items.AddObject(Node, AItem.JobName, AItem);
     NewNode.ImageIndex := Integer(AItem.FlowAction);
     NewNode.SelectedIndex := Integer(AItem.FlowAction);
+    NewNode.Selected := True;
     InsertTreeItem(NewNode, AItem);
     FJobManager.EditJobItem(TJobItem(NewNode.Data));
     IsModified := True;
