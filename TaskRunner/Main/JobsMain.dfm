@@ -71,7 +71,9 @@ object JobsMainFrame: TJobsMainFrame
       Images = imgJobFlowAction
       Indent = 21
       MultiSelect = True
+      MultiSelectStyle = [msControlSelect, msShiftSelect, msVisibleOnly, msSiblingOnly]
       PopupMenu = JobPopupMenu
+      RightClickSelect = True
       TabOrder = 1
       OnChange = JobsListChange
       OnContextPopup = JobsListContextPopup

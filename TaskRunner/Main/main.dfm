@@ -184,6 +184,7 @@ object MainForm: TMainForm
       end
       object mnuOpenMedia: TMenuItem
         Caption = '&Open Project...'
+        ShortCut = 16463
       end
       object mnuSaveMedia: TMenuItem
         Caption = '&Save Project'
@@ -196,6 +197,7 @@ object MainForm: TMainForm
       end
       object mnuSaveJob: TMenuItem
         Caption = 'Save &Job'
+        ShortCut = 16467
       end
       object mnuImportJob: TMenuItem
         Caption = '&Import Job...'
@@ -205,6 +207,7 @@ object MainForm: TMainForm
       end
       object mnuCloseJob: TMenuItem
         Caption = '&Close Job'
+        ShortCut = 16499
       end
       object mnuLine: TMenuItem
         Caption = '-'

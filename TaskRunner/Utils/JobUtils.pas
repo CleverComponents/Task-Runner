@@ -117,8 +117,9 @@ const
   BuildNo = {$I BuildNo.inc};
 
 function CheckWordExists(const Buffer, NeededString: String): Boolean;
-//function GetSettingsDirectory: string;
+function GetSettingsDirectory: string;
 function GetOwnProgramName: string;
+function AddTrailingDirSeparator(const APath: string): string;
 
 function GetMainFormCaption(const AMedia: string): string;
 
@@ -130,49 +131,39 @@ uses
 
 function GetMainFormCaption(const AMedia: string): string;
 begin
+  Result := Format('Task Runner %s %s', [BuildNo, {$IFDEF WIN64}'(x64)'{$ELSE}''{$ENDIF}]);
   if (AMedia <> '') then
   begin
-    Result := AMedia;
-  end else
-  begin
-    Result := Format('Task Runner v.%s (%s)', [BuildNo, {$IFDEF WIN64}'x64'{$ELSE}'x86'{$ENDIF}]);
+    Result := AMedia + ' - ' + Result;
   end;
 end;
 
 function GetOwnProgramName: string;
-var
-  ind: Integer;
 begin
-  Result := ExtractFileName(ParamStr(0));
-  ind := LastDelimiter('.', Result);
-  if (ind > 0) then
+  Result := 'TaskRunner';
+end;
+
+function AddTrailingDirSeparator(const APath: string): string;
+begin
+  Result := APath;
+  if (Result <> '') and (Result[Length(Result)] <> TPath.DirectorySeparatorChar) then
   begin
-    Result := system.Copy(Result, 1, ind - 1);
+    Result := Result + TPath.DirectorySeparatorChar;
   end;
 end;
 
-{function GetSettingsDirectory: string;
-var
-  verinfo: TOSVersionInfo;
+function GetSettingsDirectory: string;
 begin
-  ZeroMemory(@verinfo, SizeOf(verinfo));
-  verinfo.dwOSVersionInfoSize := SizeOf(verinfo);
-  GetVersionEx(verinfo);
-  if (verinfo.dwPlatformId = VER_PLATFORM_WIN32_NT) and (verinfo.dwMajorVersion > 3) then
+  if (TOSVersion.Platform = pfWindows) and (TOSVersion.Major > 5) then
   begin
-//    GetUserProfileDirectory()
-    Result := ''; //TODO
+    Result := AddTrailingDirSeparator(TPath.GetHomePath())
+      + GetOwnProgramName() + TPath.DirectorySeparatorChar;
   end else
   begin
-    Result := ExtractFilePath(ParamStr(0));
-    if (Result <> '') and (Result[Length(Result)] <> '\') then
-    begin
-      Result := Result + '\';
-    end;
-    Result := Result + GetOwnProgramName();
+    Result := AddTrailingDirSeparator(ExtractFilePath(ParamStr(0)));
   end;
 end;
-}
+
 function CheckWordExists(const Buffer, NeededString: String): Boolean;
 var
   i, curpos, EndSymbol, len: Integer;
@@ -352,7 +343,8 @@ begin
   if (Pos(cJobInputFile, AFileName) > 0) then
   begin
     InputFileName := GetJobTempDir() + '\' + GetUniqueName() + '.run';
-    AInput.SaveToFile(InputFileName);
+    AInput.WriteBOM := False;
+    AInput.SaveToFile(InputFileName, TEncoding.UTF8);
     AFileName := ReplaceString(AFileName, cJobInputFile, '"' + InputFileName + '"');
   end else
   begin
@@ -390,7 +382,8 @@ begin
   UniqueName := GetJobTempDir() + '\' + GetUniqueName() + '.cmd';
   AInput := TStringList.Create();
   try
-    AFile.SaveToFile(UniqueName);
+    AFile.WriteBOM := False;
+    AFile.SaveToFile(UniqueName, TEncoding.UTF8);
     Result := PerformFile(UniqueName + ' > ' + cJobOutFile, AInput, AOutput, AErrors);
   finally
     AInput.Free();
@@ -412,7 +405,8 @@ begin
     if (Pos(cJobInputFile, AFile.Text) > 0) then
     begin
       InputFileName := GetJobTempDir() + '\' + GetUniqueName() + '.' + AScriptExt;
-      AInput.SaveToFile(InputFileName);
+      AInput.WriteBOM := False;
+      AInput.SaveToFile(InputFileName, TEncoding.UTF8);
       AFile.Text := ReplaceString(AFile.Text, cJobInputFile, '"' + InputFileName + '"');
     end else
     begin

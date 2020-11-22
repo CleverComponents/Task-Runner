@@ -84,7 +84,6 @@ type
 
   TCustomJobDskItem = class(TJobDskItem)
   private
-    FWindowPos: TRect;
     FIsMaximized: Boolean;
   protected
     procedure Load(AStream: TStream; AVersion: Integer); overload; override;
@@ -92,8 +91,9 @@ type
     procedure Load(ANode: IXMLDOMNode); overload; override;
     procedure Store(ANode: IXMLDOMNode); overload; override;
   public
+    WindowPos: TRect;
+
     constructor Create(ADataItemFullName: string); override;
-    property WindowPos: TRect read FWindowPos;
     property IsMaximized: Boolean read FIsMaximized write FIsMaximized;
   end;
 
@@ -483,7 +483,7 @@ end;
 constructor TCustomJobDskItem.Create(ADataItemFullName: string);
 begin
   inherited Create(ADataItemFullName);
-  ZeroMemory(@FWindowPos, SizeOf(TRect));
+  ZeroMemory(@WindowPos, SizeOf(TRect));
 end;
 
 procedure TCustomJobDskItem.Load(AStream: TStream; AVersion: Integer);
@@ -491,10 +491,10 @@ var
   v: Integer;
 begin
   inherited Load(AStream, AVersion);
-  AStream.Read(FWindowPos.Left, SizeOf(Integer));
-  AStream.Read(FWindowPos.Right, SizeOf(Integer));
-  AStream.Read(FWindowPos.Top, SizeOf(Integer));
-  AStream.Read(FWindowPos.Bottom, SizeOf(Integer));
+  AStream.Read(WindowPos.Left, SizeOf(Integer));
+  AStream.Read(WindowPos.Right, SizeOf(Integer));
+  AStream.Read(WindowPos.Top, SizeOf(Integer));
+  AStream.Read(WindowPos.Bottom, SizeOf(Integer));
   AStream.Read(v, SizeOf(Integer));
   FIsMaximized := Boolean(v);
 end;
@@ -504,10 +504,10 @@ var
   v: Integer;
 begin
   inherited Store(AStream);
-  AStream.Write(FWindowPos.Left, SizeOf(Integer));
-  AStream.Write(FWindowPos.Right, SizeOf(Integer));
-  AStream.Write(FWindowPos.Top, SizeOf(Integer));
-  AStream.Write(FWindowPos.Bottom, SizeOf(Integer));
+  AStream.Write(WindowPos.Left, SizeOf(Integer));
+  AStream.Write(WindowPos.Right, SizeOf(Integer));
+  AStream.Write(WindowPos.Top, SizeOf(Integer));
+  AStream.Write(WindowPos.Bottom, SizeOf(Integer));
   v := Integer(FIsMaximized);
   AStream.Write(v, SizeOf(Integer));
 end;
@@ -518,10 +518,10 @@ var
 begin
   inherited Load(ANode);
   XMLToForm(Store, ANode);
-  FWindowPos.Left := Store.Left;
-  FWindowPos.Top := Store.Top;
-  FWindowPos.Right := FWindowPos.Left + Store.Width;
-  FWindowPos.Bottom := FWindowPos.Top + Store.Height;
+  WindowPos.Left := Store.Left;
+  WindowPos.Top := Store.Top;
+  WindowPos.Right := WindowPos.Left + Store.Width;
+  WindowPos.Bottom := WindowPos.Top + Store.Height;
   FIsMaximized := Store.Maximized;
 end;
 
@@ -530,10 +530,10 @@ var
   Store: TStoreFormStruct;
 begin
   inherited Store(ANode);
-  Store.Width := (FWindowPos.Right - FWindowPos.Left);
-  Store.Height := (FWindowPos.Bottom - FWindowPos.Top);
-  Store.Left := FWindowPos.Left;
-  Store.Top := FWindowPos.Top;
+  Store.Width := (WindowPos.Right - WindowPos.Left);
+  Store.Height := (WindowPos.Bottom - WindowPos.Top);
+  Store.Left := WindowPos.Left;
+  Store.Top := WindowPos.Top;
   Store.Maximized := FIsMaximized;
   FormToXML(Store, ANode);
 end;
