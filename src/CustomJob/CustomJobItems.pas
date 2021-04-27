@@ -251,20 +251,15 @@ begin
           end;
         end;
 
-        if (S[j] = ParseLexems[ParseCount + 1])
-          and ((ParseCount > 0) or (j = 1) or (Pos(S[j - 1], Delimiters) > 0)) then
+        if (S[j] = ParseLexems[ParseCount + 1]) then
         begin
           if (ParseCount = 0) then
           begin
             LineNo := i;
             PosInLine := j;
             Name := '';
-            Inc(ParseCount);
-          end else
-          if (ParseCount > 0) then
-          begin
-            Inc(ParseCount);
           end;
+          Inc(ParseCount);
         end else
         begin
           ParseCount := 0;

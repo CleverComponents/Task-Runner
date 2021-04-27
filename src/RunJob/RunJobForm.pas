@@ -95,13 +95,17 @@ end;
 
 procedure TRunJobfrm.DoFinishJob(Visitor: TJobVisitor);
 begin
-  if (Visitor.Errors.Count > 0) then
+  if (Visitor.CurrentJobItem.FlowAction <> faDisable) then
   begin
-    UpdateVisitorItem(jsFailed, Visitor, True, '', '');
-  end else
-  begin
-    UpdateVisitorItem(jsDone, Visitor, True, '', '');
+    if (Visitor.Errors.Count > 0) then
+    begin
+      UpdateVisitorItem(jsFailed, Visitor, True, '', '');
+    end else
+    begin
+      UpdateVisitorItem(jsDone, Visitor, True, '', '');
+    end;
   end;
+
   if MemData.Locate('visitor;isrun', VarArrayOf([Integer(Visitor), True]), []) then
   begin
     while (MemDatavisitor.AsInteger = Integer(Visitor)) and (not MemData.Eof) do
@@ -162,17 +166,21 @@ procedure TRunJobfrm.DoStartJob(Visitor: TJobVisitor);
       MemData.Cancel();
       raise;
     end;
-    for i := 0 to ACurrentJob.ItemsCount - 1 do
+
+    if (ACurrentJob.FlowAction <> faDisable) then
     begin
-      Item := ACurrentJob.Items[i];
-      if (Item.FlowAction = faDisable) then
+      for i := 0 to ACurrentJob.ItemsCount - 1 do
       begin
-        St := jsDisabled;
-      end else
-      begin
-        St := jsWaiting;
+        Item := ACurrentJob.Items[i];
+        if (Item.FlowAction = faDisable) then
+        begin
+          St := jsDisabled;
+        end else
+        begin
+          St := jsWaiting;
+        end;
+        AddRunItem('', AFullJobName, Item, St);
       end;
-      AddRunItem('', AFullJobName, Item, St);
     end;
   end;
 begin
@@ -180,7 +188,14 @@ begin
   begin
     MemData.Open();
   end;
-  AddRunItem(Visitor.JobName, '', Visitor.CurrentJobItem, jsStarted);
+
+  if (Visitor.CurrentJobItem.FlowAction = faDisable) then
+  begin
+    AddRunItem(Visitor.JobName, '', Visitor.CurrentJobItem, jsDisabled);
+  end else
+  begin
+    AddRunItem(Visitor.JobName, '', Visitor.CurrentJobItem, jsStarted);
+  end;
   DoHandling();
 end;
 
