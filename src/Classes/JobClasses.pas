@@ -1393,7 +1393,6 @@ function TJobVisitor.Perform(AJobItem: TJobItem; IsUnitJob: Boolean): Boolean;
     i: Integer;
     AItem: TJobItem;
     IsSkipped: Boolean;
-//    p, p1: Pointer; //TODO
   begin
     Result := True;
     IsSkipped := False;
@@ -1404,8 +1403,6 @@ function TJobVisitor.Perform(AJobItem: TJobItem; IsUnitJob: Boolean): Boolean;
     Log.Clear();
     Errors.Clear();
     DoItemProcessed();
-//    p := nil; //TODO
-//    p1 := Pointer(p^);
     try
       Log.Add(#13#10 + Format(cJobPerformMessage, [AJob.JobName]));
       AItem := TJobItem.Create(AJob.JobManager, AJob.FOwner, AJob.JobName, TJobDataItemClass(AJob.Data.ClassType));
@@ -1471,7 +1468,7 @@ function TJobVisitor.Perform(AJobItem: TJobItem; IsUnitJob: Boolean): Boolean;
             end;
           faDisable:
             begin
-              Log.Add(Format(cJobDisabled, [AItem.JobName]));
+              FullLog.Add(Format(cJobDisabled, [AItem.JobName]));
             end;
         end;
       end;
@@ -1490,10 +1487,18 @@ begin
 
   DoStart();
   try
-    Result := DoRunJob(AJobItem);
+    if (AJobItem.FlowAction <> faDisable) then
+    begin
+      Result := DoRunJob(AJobItem);
+    end else
+    begin
+      Result := True;
+      FullLog.Add(Format(cJobDisabled, [AJobItem.JobName]));
+    end;
+
     if not FIsStarted then
     begin
-      FErrors.Add(cPerformanceStopped);
+      FullErrors.Add(cPerformanceStopped);
     end;
   finally
     FIsStarted := False;

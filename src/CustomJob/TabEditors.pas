@@ -95,7 +95,15 @@ procedure TTabEditorsFrame.PageControlContextPopup(Sender: TObject;
 var
   HitTests: THitTests;
   Point: TPoint;
+  ind: Integer;
 begin
+  ind := PageControl.IndexOfTabAt(MousePos.X, MousePos.Y);
+  if (ind > -1) then
+  begin
+    PageControl.ActivePageIndex := ind;
+    TabManager.ActivateEditor();
+  end;
+
   HitTests := PageControl.GetHitTestInfoAt(MousePos.X, MousePos.Y);
   Handled := (htOnLabel in HitTests);
   if Handled then

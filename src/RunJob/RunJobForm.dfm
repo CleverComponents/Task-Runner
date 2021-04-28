@@ -35,13 +35,8 @@ object RunJobfrm: TRunJobfrm
     ActivePage = tabDescription
     Align = alClient
     TabOrder = 0
-    ExplicitTop = 109
-    ExplicitWidth = 500
-    ExplicitHeight = 244
     object tabDescription: TTabSheet
       Caption = 'Description'
-      ExplicitWidth = 492
-      ExplicitHeight = 216
       object MemoLog: TJobRichEdit
         Left = 0
         Top = 0
@@ -60,15 +55,11 @@ object RunJobfrm: TRunJobfrm
         ScrollBars = ssBoth
         TabOrder = 0
         Zoom = 100
-        ExplicitWidth = 492
-        ExplicitHeight = 216
       end
     end
     object tabErrors: TTabSheet
       Caption = 'Errors'
       ImageIndex = 1
-      ExplicitWidth = 492
-      ExplicitHeight = 216
       object MemoError: TJobRichEdit
         Left = 0
         Top = 0
@@ -87,8 +78,6 @@ object RunJobfrm: TRunJobfrm
         ScrollBars = ssBoth
         TabOrder = 0
         Zoom = 100
-        ExplicitWidth = 492
-        ExplicitHeight = 216
       end
     end
   end

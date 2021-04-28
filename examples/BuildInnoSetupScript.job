@@ -9,8 +9,8 @@
 				<CanPerform></CanPerform>
 				<FlowAction>Success</FlowAction>
 				<ParamList>
-					<Param name="source_dir">d:\Progects\Task-Runner</Param>
-					<Param name="output_dir">d:\Progects\Task-Runner\OutPut</Param>
+					<Param name="source_dir">c:\Users\user\Documents\Task-Runner</Param>
+					<Param name="output_dir">c:\Users\user\Documents\OutPut</Param>
 					<Param name="app_version">1.3</Param>
 				</ParamList>
 			</Params>
