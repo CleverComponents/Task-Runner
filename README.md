@@ -1,6 +1,6 @@
 # TaskRunner
 
-<img align="left" src="Images\TaskRunner.jpg"/>
+<img align="left" src="images\TaskRunner.jpg"/>
 
 This program serves for Software build automation, executing sequential tasks, including database backup/restore, running SQL scripts, Windows shell commands, Pascal scripts, passing variables through the whole task execution chain, and many more. You can set up a list of global parameters, such as Delphi application path, and use these parameters in tasks. You can even call a separated task chain from another task in the same way as you call Delphi procedure or a function, with passing parameters.
 
@@ -21,7 +21,7 @@ Please feel free to star our repository to help other devs to learn about this p
 
 ## Examples
 
-* [Build InnoSetup Script](Examples/BuildInnoSetupScript.job) - automates the compiling of an InnoSetup installation script, customizes the input parameters, and cleanups the output folder.
-* [Build Delphi Project](Examples/BuildDelphiProject.job) - tasks to compile a program using the Delphi command line compiler and pack using the pkzipc utility.   
+* [Build InnoSetup Script](examples/BuildInnoSetupScript.job) - automates the compiling of an InnoSetup installation script, customizes the input parameters, and cleanups the output folder.
+* [Build Delphi Project](examples/BuildDelphiProject.job) - tasks to compile a program using the Delphi command line compiler and pack using the pkzipc utility.   
 Video tutorial on CleverComponents YouTube channel: [How to set up and run a project in TaskRunner](https://youtu.be/cndY-BVm8yA)
-* [Test Scripter Task](Examples/TestScripterTask.job) - a simple project, which shows how to run a Pascal script and pass parameters to this script.
+* [Test Scripter Task](examples/TestScripterTask.job) - a simple project, which shows how to run a Pascal script and pass parameters to this script.
