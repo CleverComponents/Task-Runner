@@ -19,6 +19,10 @@ You can contribute to the TaskRunner development by suggesting your fixes and im
 
 Please feel free to star our repository to help other devs to learn about this project.
 
+
+
+Note: The program requires [Visual C++ Redistributable for Visual Studio 2015 (x86)](https://www.microsoft.com/en-US/download/details.aspx?id=48145) to be installed.
+
 ## Examples
 
 * [Build InnoSetup Script](examples/BuildInnoSetupScript.job) - automates the compiling of an InnoSetup installation script, customizes the input parameters, and cleanups the output folder.

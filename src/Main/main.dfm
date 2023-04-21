@@ -12,7 +12,7 @@ object MainForm: TMainForm
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
   PixelsPerInch = 96
   TextHeight = 13
